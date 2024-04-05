@@ -17,15 +17,28 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
     private Long reviewId;
+
     @Basic
     @Column(name = "rating")
     private Integer rating;
+
     @Basic
     @Column(name = "comment")
     private String comment;
+
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "reservation_id", referencedColumnName = "reservation_id", nullable = false)
     private Reservation reservation;
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "reviewId=" + reviewId +
+                ", rating=" + rating +
+                ", comment='" + comment + '\'' +
+                ", reservation=" + reservation +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {

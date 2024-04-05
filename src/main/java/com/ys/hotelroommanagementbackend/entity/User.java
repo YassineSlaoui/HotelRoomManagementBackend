@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,22 +19,38 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;
+
     @Basic
     @Column(name = "username", nullable = false)
     private String username;
+
     @Basic
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+
     @Basic
     @Column(name = "password", nullable = false)
     private String password;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    private HashSet<Role> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
+
     @OneToOne(mappedBy = "user")
     private Guest guest;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", roles=" + roles +
+                ", guest=" + guest +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {

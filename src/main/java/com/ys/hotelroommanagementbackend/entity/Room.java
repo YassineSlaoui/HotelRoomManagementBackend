@@ -17,40 +17,70 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_id")
     private Long roomId;
+
     @Basic
     @Column(name = "room_number", nullable = false)
     private String roomNumber;
+
     @Basic
     @Column(name = "room_type", nullable = false)
     private String roomType;
+
     @Basic
     @Column(name = "description", nullable = false)
     private String description;
+
     @Basic
     @Column(name = "price", nullable = false)
     private Double price;
+
     @Basic
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
+
     @Basic
     @Column(name = "available", nullable = false)
     private Boolean available;
+
     @ElementCollection
     private List<String> photoURLs = new ArrayList<>();
+
     @OneToMany(mappedBy = "room")
-    private HashSet<Reservation> reservations = new HashSet<>();
+    private Set<Reservation> reservations = new HashSet<>();
+
     @Basic
     @Column(name = "availibility-start", nullable = false)
     private Date availabilityStartDate;
+
     @Basic
     @Column(name = "availibility-end", nullable = false)
     private Date availabilityEndDate;
+
     @Basic
     @Column(name = "created-date", nullable = false)
     private Date createdDate;
+
     @Basic
     @Column(name = "last-modified-date", nullable = false)
     private Date lastModifiedDate;
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "roomId=" + roomId +
+                ", roomNumber='" + roomNumber + '\'' +
+                ", roomType='" + roomType + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", capacity=" + capacity +
+                ", available=" + available +
+                ", photoURLs=" + photoURLs +
+                ", availabilityStartDate=" + availabilityStartDate +
+                ", availabilityEndDate=" + availabilityEndDate +
+                ", createdDate=" + createdDate +
+                ", lastModifiedDate=" + lastModifiedDate +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {

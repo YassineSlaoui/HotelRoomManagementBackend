@@ -6,6 +6,7 @@ import lombok.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,30 +16,50 @@ import java.util.Objects;
 @Entity
 @Table(name = "guests")
 public class Guest {
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "guest_id")
     private long guestId;
+
     @Basic
     @Column(name = "first_name", nullable = false)
     private String firstName;
+
     @Basic
     @Column(name = "last_name", nullable = false)
     private String lastName;
+
     @Basic
     @Column(name = "contact_info", nullable = false)
     private String contactInfo;
+
     @Basic
     @Column(name = "created_date", nullable = false)
     private Date createdDate;
+
     @Basic
     @Column(name = "last_modified_date", nullable = false)
     private Date lastModifiedDate;
+
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
+
     @OneToMany(mappedBy = "guest")
-    private HashSet<Reservation> reservations = new HashSet<>();
+    private Set<Reservation> reservations = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return "Guest{" +
+                "guestId=" + guestId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", contactInfo='" + contactInfo + '\'' +
+                ", createdDate=" + createdDate +
+                ", lastModifiedDate=" + lastModifiedDate +
+                ", user=" + user +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {

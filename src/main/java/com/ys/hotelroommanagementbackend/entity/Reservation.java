@@ -3,6 +3,8 @@ package com.ys.hotelroommanagementbackend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Objects;
 
@@ -26,9 +28,34 @@ public class Reservation {
     private Room room;
     @OneToOne(mappedBy = "reservation")
     private Review review;
+    @Basic
+    @Column(name = "check_in_date")
     private Date checkInDate;
+    @Basic
+    @Column(name = "check_out_date")
     private Date checkOutDate;
+    @Basic
+    @Column(name = "is_active")
     private Boolean isActive;
+
+    public Boolean getActive() {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        isActive = currentDateTime.isAfter(checkInDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()) && currentDateTime.isBefore(checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        return isActive;
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "reservationId=" + reservationId +
+                ", guest=" + guest +
+                ", room=" + room +
+                ", review=" + review +
+                ", checkInDate=" + checkInDate +
+                ", checkOutDate=" + checkOutDate +
+                ", isActive=" + isActive +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {
