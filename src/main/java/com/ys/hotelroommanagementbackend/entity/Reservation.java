@@ -16,24 +16,31 @@ import java.util.Objects;
 @Entity
 @Table(name = "reservations")
 public class Reservation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
     private Long reservationId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "guest_id", referencedColumnName = "guest_id", nullable = false)
     private Guest guest;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id", referencedColumnName = "room_id", nullable = false)
     private Room room;
+
     @OneToOne(mappedBy = "reservation")
     private Review review;
+
     @Basic
     @Column(name = "check_in_date")
     private Date checkInDate;
+
     @Basic
     @Column(name = "check_out_date")
     private Date checkOutDate;
+
     @Basic
     @Column(name = "is_active")
     private Boolean isActive;

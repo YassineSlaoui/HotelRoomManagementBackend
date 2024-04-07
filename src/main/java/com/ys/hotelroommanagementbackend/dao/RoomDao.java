@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface RoomDao extends JpaRepository<Room, Long> {
+
     @Query("SELECT r FROM Room AS r WHERE " +
             "(:roomNumber IS NULL OR r.roomNumber = :roomNumber) AND " +
             "(:roomType IS NULL OR r.roomType = :roomType) AND " +

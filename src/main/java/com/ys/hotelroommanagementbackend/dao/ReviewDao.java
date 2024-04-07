@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ReviewDao extends JpaRepository<Review, Long> {
+
     List<Review> findReviewsByReservation(Reservation reservation);
 
     @Query("SELECT r FROM Review AS r WHERE " +

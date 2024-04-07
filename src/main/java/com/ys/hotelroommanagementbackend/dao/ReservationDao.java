@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReservationDao extends JpaRepository<Reservation, Long> {
+
     List<Reservation> findReservationsByGuest(Guest guest);
 
     List<Reservation> findReservationsByGuestAndRoom(Guest guest, Room room);
