@@ -34,17 +34,18 @@ public class Guest {
     private String contactInfo;
 
     @Basic
-    @Column(name = "created_date", nullable = false)
+    @Column(name = "created_date")
     private Date createdDate;
 
     @Basic
-    @Column(name = "last_modified_date", nullable = false)
+    @Column(name = "last_modified_date")
     private Date lastModifiedDate;
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "guest")
     private Set<Reservation> reservations = new HashSet<>();
 
@@ -57,7 +58,6 @@ public class Guest {
                 ", contactInfo='" + contactInfo + '\'' +
                 ", createdDate=" + createdDate +
                 ", lastModifiedDate=" + lastModifiedDate +
-                ", user=" + user +
                 '}';
     }
 
@@ -66,11 +66,12 @@ public class Guest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Guest guest = (Guest) o;
-        return guestId == guest.guestId && Objects.equals(firstName, guest.firstName) && Objects.equals(lastName, guest.lastName) && Objects.equals(contactInfo, guest.contactInfo) && Objects.equals(createdDate, guest.createdDate) && Objects.equals(lastModifiedDate, guest.lastModifiedDate) && Objects.equals(user, guest.user) && Objects.equals(reservations, guest.reservations);
+        return guestId == guest.guestId && Objects.equals(firstName, guest.firstName) && Objects.equals(lastName, guest.lastName) && Objects.equals(contactInfo, guest.contactInfo) && Objects.equals(createdDate, guest.createdDate) && Objects.equals(lastModifiedDate, guest.lastModifiedDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(guestId, firstName, lastName, contactInfo, createdDate, lastModifiedDate, user, reservations);
+        return Objects.hash(guestId, firstName, lastName, contactInfo, createdDate, lastModifiedDate);
     }
+
 }

@@ -21,9 +21,10 @@ public class Role {
     private Long roleId;
 
     @Basic
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", unique = true, nullable = false, columnDefinition = "CITEXT")
     private String name;
 
+    @Builder.Default
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     private Set<User> users = new HashSet<>();
 
@@ -32,7 +33,6 @@ public class Role {
         return "Role{" +
                 "roleId=" + roleId +
                 ", name='" + name + '\'' +
-                ", users=" + users +
                 '}';
     }
 
@@ -41,11 +41,12 @@ public class Role {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Role role = (Role) o;
-        return Objects.equals(roleId, role.roleId) && Objects.equals(name, role.name) && Objects.equals(users, role.users);
+        return Objects.equals(roleId, role.roleId) && Objects.equals(name, role.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(roleId, name, users);
+        return Objects.hash(roleId, name);
     }
+
 }

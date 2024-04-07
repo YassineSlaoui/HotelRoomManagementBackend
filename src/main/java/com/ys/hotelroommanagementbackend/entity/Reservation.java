@@ -48,9 +48,6 @@ public class Reservation {
     public String toString() {
         return "Reservation{" +
                 "reservationId=" + reservationId +
-                ", guest=" + guest +
-                ", room=" + room +
-                ", review=" + review +
                 ", checkInDate=" + checkInDate +
                 ", checkOutDate=" + checkOutDate +
                 ", isActive=" + isActive +
@@ -62,12 +59,13 @@ public class Reservation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Reservation that = (Reservation) o;
-        return Objects.equals(reservationId, that.reservationId) && Objects.equals(guest, that.guest) && Objects.equals(room, that.room) && Objects.equals(review, that.review) && Objects.equals(checkInDate, that.checkInDate) && Objects.equals(checkOutDate, that.checkOutDate) && Objects.equals(isActive, that.isActive);
+        return Objects.equals(reservationId, that.reservationId) && Objects.equals(checkInDate, that.checkInDate) && Objects.equals(checkOutDate, that.checkOutDate) && Objects.equals(isActive, that.isActive);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(reservationId, guest, room, review, checkInDate, checkOutDate, isActive);
+        return Objects.hash(reservationId, checkInDate, checkOutDate, isActive);
     }
+
 }
 

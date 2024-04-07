@@ -36,7 +36,6 @@ public class Review {
                 "reviewId=" + reviewId +
                 ", rating=" + rating +
                 ", comment='" + comment + '\'' +
-                ", reservation=" + reservation +
                 '}';
     }
 
@@ -45,11 +44,12 @@ public class Review {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Review review = (Review) o;
-        return Objects.equals(reviewId, review.reviewId) && Objects.equals(rating, review.rating) && Objects.equals(comment, review.comment) && Objects.equals(reservation, review.reservation);
+        return Objects.equals(reviewId, review.reviewId) && Objects.equals(rating, review.rating) && Objects.equals(comment, review.comment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(reviewId, rating, comment, reservation);
+        return Objects.hash(reviewId, rating, comment);
     }
+
 }
