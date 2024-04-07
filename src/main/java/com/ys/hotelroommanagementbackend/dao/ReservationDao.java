@@ -7,13 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface ReservationDao extends JpaRepository<Reservation, Long> {
     List<Reservation> findReservationsByGuest(Guest guest);
 
     List<Reservation> findReservationsByGuestAndRoom(Guest guest, Room room);
 
-
-    Reservation findReservationByGuestAndRoomAndCheckInDate(Guest guest, Room room, Date checkInDate);
-
+    Optional<Reservation> findReservationByGuestAndRoomAndCheckInDate(Guest guest, Room room, Date checkInDate);
 }
