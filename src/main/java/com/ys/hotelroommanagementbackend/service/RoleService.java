@@ -6,5 +6,5 @@ public interface RoleService {
 
     Role createRole(String roleName);
 
-    Role findRole(String roleName);
+    Role getRole(String roleName);
 }

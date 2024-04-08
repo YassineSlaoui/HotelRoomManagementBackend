@@ -8,25 +8,29 @@ import java.util.Date;
 
 public interface ReservationService {
 
-    Reservation findReservationById(Long reservationId);
+    Reservation getReservationById(Long reservationId);
 
-    Page<ReservationDTO> findAllReservations(int page, int size);
+    Page<ReservationDTO> getAllReservations(int page, int size);
 
-    Page<ReservationDTO> findReservationsByGuestAndRoom(Long guestId, Long roomId, int page, int size);
+    Page<ReservationDTO> getReservationsByGuestAndRoom(Long guestId, Long roomId, int page, int size);
 
-    Page<ReservationDTO> findReservationsByGuest(Long guestId, int page, int size);
+    Page<ReservationDTO> getReservationsByGuest(Long guestId, int page, int size);
 
-    Page<ReservationDTO> findReservationsEndingOn(Date endDate, int page, int size);
+    Page<ReservationDTO> getReservationsByRoom(Long roomId, int page, int size);
 
-    Page<ReservationDTO> findReservationsStartingOn(Date startDate, int page, int size);
+    Page<ReservationDTO> getReservationsEndingOn(Date endDate, int page, int size);
 
-    Page<ReservationDTO> findReservationsStartingFrom(Date startDate, int page, int size);
+    Page<ReservationDTO> getReservationsStartingOn(Date startDate, int page, int size);
 
-    ReservationDTO findReservationByGuestAndRoomAndCheckInDate(Long guestId, Long roomId, Date checkInDate);
+    Page<ReservationDTO> getReservationsStartingFrom(Date startDate, int page, int size);
+
+    ReservationDTO getReservationByGuestAndRoomAndCheckInDate(Long guestId, Long roomId, Date checkInDate);
 
     ReservationDTO createReservation(ReservationDTO reservationDTO);
 
     ReservationDTO updateReservation(ReservationDTO reservationDTO);
 
     void deleteReservation(Long reservationId);
+
+    void addReviewToReservation(Long reservationId, Long reviewId);
 }

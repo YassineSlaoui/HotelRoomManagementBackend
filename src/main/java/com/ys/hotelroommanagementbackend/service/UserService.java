@@ -4,9 +4,9 @@ import com.ys.hotelroommanagementbackend.entity.User;
 
 public interface UserService {
 
-    User loadUserByEmail(String email);
+    User getUserByEmail(String email);
 
-    User loadUserByUsername(String username);
+    User getUserByUsername(String username);
 
     User createUser(String username, String email, String password);
 

@@ -14,7 +14,7 @@ public interface ReviewService {
 
     Page<ReviewDTO> getGuestReviews(Long guestId, int page, int size);
 
-    ReviewDTO saveReview(ReviewDTO review);
+    ReviewDTO createReview(ReviewDTO review);
 
     ReviewDTO updateReview(ReviewDTO review);
 

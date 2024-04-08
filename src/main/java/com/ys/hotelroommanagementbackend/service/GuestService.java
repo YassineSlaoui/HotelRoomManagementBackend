@@ -12,9 +12,11 @@ public interface GuestService {
 
     Page<GuestDTO> getGuestsByName(String name, int page, int size);
 
-    Page<GuestDTO> fetchAllGuests(int page, int size);
+    Page<GuestDTO> getAllGuests(int page, int size);
 
     GuestDTO getGuestByEmail(String email);
+
+    GuestDTO getGuestByUsername(String username);
 
     GuestDTO createGuest(GuestDTO guestDTO);
 

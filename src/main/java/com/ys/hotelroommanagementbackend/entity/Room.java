@@ -52,20 +52,12 @@ public class Room {
     private Set<Reservation> reservations = new HashSet<>();
 
     @Basic
-    @Column(name = "availibility-start", nullable = false)
+    @Column(name = "availability-start", nullable = false)
     private Date availabilityStartDate;
 
     @Basic
-    @Column(name = "availibility-end", nullable = false)
+    @Column(name = "availability-end", nullable = false)
     private Date availabilityEndDate;
-
-    @Basic
-    @Column(name = "created-date", nullable = false)
-    private Date createdDate;
-
-    @Basic
-    @Column(name = "last-modified-date", nullable = false)
-    private Date lastModifiedDate;
 
     @Override
     public String toString() {
@@ -80,8 +72,6 @@ public class Room {
                 ", photoURLs=" + photoURLs +
                 ", availabilityStartDate=" + availabilityStartDate +
                 ", availabilityEndDate=" + availabilityEndDate +
-                ", createdDate=" + createdDate +
-                ", lastModifiedDate=" + lastModifiedDate +
                 '}';
     }
 
@@ -90,12 +80,12 @@ public class Room {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Room room = (Room) o;
-        return Objects.equals(roomId, room.roomId) && Objects.equals(roomNumber, room.roomNumber) && Objects.equals(roomType, room.roomType) && Objects.equals(description, room.description) && Objects.equals(price, room.price) && Objects.equals(capacity, room.capacity) && Objects.equals(available, room.available) && Objects.equals(photoURLs, room.photoURLs) && Objects.equals(availabilityStartDate, room.availabilityStartDate) && Objects.equals(availabilityEndDate, room.availabilityEndDate) && Objects.equals(createdDate, room.createdDate) && Objects.equals(lastModifiedDate, room.lastModifiedDate);
+        return Objects.equals(roomId, room.roomId) && Objects.equals(roomNumber, room.roomNumber) && Objects.equals(roomType, room.roomType) && Objects.equals(description, room.description) && Objects.equals(price, room.price) && Objects.equals(capacity, room.capacity) && Objects.equals(available, room.available) && Objects.equals(photoURLs, room.photoURLs) && Objects.equals(availabilityStartDate, room.availabilityStartDate) && Objects.equals(availabilityEndDate, room.availabilityEndDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(roomId, roomNumber, roomType, description, price, capacity, available, photoURLs, availabilityStartDate, availabilityEndDate, createdDate, lastModifiedDate);
+        return Objects.hash(roomId, roomNumber, roomType, description, price, capacity, available, photoURLs, availabilityStartDate, availabilityEndDate);
     }
 
 }

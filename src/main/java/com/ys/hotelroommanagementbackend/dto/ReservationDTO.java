@@ -9,7 +9,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReservatonDTO {
+public class ReservationDTO {
 
     @Setter(AccessLevel.NONE)
     private Long reservationId;

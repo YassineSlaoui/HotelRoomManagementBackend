@@ -1,19 +1,19 @@
 package com.ys.hotelroommanagementbackend.dao;
 
-import com.ys.hotelroommanagementbackend.entity.Reservation;
 import com.ys.hotelroommanagementbackend.entity.Review;
-import com.ys.hotelroommanagementbackend.entity.Room;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 public interface ReviewDao extends JpaRepository<Review, Long> {
 
-    List<Review> findReviewsByReservation(Reservation reservation);
+    @Query("SELECT r FROM Review AS r WHERE " +
+            "r.reservation.room.roomId = :roomId")
+    Page<Review> findReviewsByRoom(@Param("roomId") Long roomId, Pageable pageable);
 
     @Query("SELECT r FROM Review AS r WHERE " +
-            "r.reservation.room = :room")
-    List<Review> findReviewsByRoom(@Param("room") Room room);
+            "r.reservation.guest.guestId = :guestId")
+    Page<Review> findReviewsByGuest(@Param("guestId") Long guestId, Pageable pageable);
 }

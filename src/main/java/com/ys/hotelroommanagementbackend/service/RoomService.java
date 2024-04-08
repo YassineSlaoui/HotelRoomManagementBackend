@@ -5,6 +5,7 @@ import com.ys.hotelroommanagementbackend.dto.RoomDTO;
 import com.ys.hotelroommanagementbackend.entity.Room;
 import org.springframework.data.domain.Page;
 
+import java.util.Date;
 import java.util.List;
 
 public interface RoomService {
@@ -26,4 +27,6 @@ public interface RoomService {
     RoomDTO updateRoom(RoomDTO roomDTO);
 
     void deleteRoom(Long roomId);
+
+    void bookRoomForGuest(Long roomId, Long guestId, Date checkInDate, Date checkOutDate);
 }

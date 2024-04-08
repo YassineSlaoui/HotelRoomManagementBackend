@@ -1,8 +1,5 @@
 package com.ys.hotelroommanagementbackend.runner;
 
-import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
 import com.ys.hotelroommanagementbackend.dao.*;
 import com.ys.hotelroommanagementbackend.entity.Guest;
 import com.ys.hotelroommanagementbackend.entity.Role;
@@ -12,13 +9,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.querydsl.QPageRequest;
-import org.springframework.data.querydsl.QSort;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.HashSet;
 
 @Component
 public class CLIRunner implements CommandLineRunner, InitializingBean {
@@ -55,7 +48,7 @@ public class CLIRunner implements CommandLineRunner, InitializingBean {
         userDao.save(janeUser);
         guestDao.save(Guest.builder().firstName("Jane").lastName("Doe").contactInfo("None").user(janeUser).build());
 //        guestDao.deleteById(guestDao.findGuestByUsername("jane").get().getGuestId());
-        userDao.findAll(QPageRequest.of(0,2)).forEach(System.out::println);
+        userDao.findAll(PageRequest.of(0, 2)).forEach(System.out::println);
     }
 
 
@@ -97,11 +90,10 @@ public class CLIRunner implements CommandLineRunner, InitializingBean {
     private void readUser() {
         userDao.findUserByEmail("user1@domain.com").ifPresentOrElse(user -> {
             System.out.println(user);
-            System.out.println("sdkjndf");
             user.getRoles().forEach(role -> System.out.println("Role: " + role.getName()));
         }, () -> System.err.println("User Not Found"));
-        userDao.findUserByEmailAndPassword("user3@domain.com", "pass3").ifPresentOrElse(System.out::println, () -> System.err.println("User Not Found"));
-        userDao.findUserByEmailAndPassword("user3@domain.com", "pass2").ifPresentOrElse(System.out::println, () -> System.err.println("User Not Found"));
+        userDao.findUserByEmail("user3@domain.com").ifPresentOrElse(System.out::println, () -> System.err.println("User Not Found"));
+        userDao.findUserByEmail("user3@domain.com").ifPresentOrElse(System.out::println, () -> System.err.println("User Not Found"));
     }
 
 

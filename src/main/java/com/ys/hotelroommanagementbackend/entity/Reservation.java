@@ -23,14 +23,14 @@ public class Reservation {
     private Long reservationId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "guest_id", referencedColumnName = "guest_id", nullable = false)
+    @JoinColumn(name = "guest_id", referencedColumnName = "guest_id")
     private Guest guest;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id", referencedColumnName = "room_id", nullable = false)
     private Room room;
 
-    @OneToOne(mappedBy = "reservation")
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.REMOVE)
     private Review review;
 
     @Basic
@@ -49,6 +49,21 @@ public class Reservation {
         LocalDateTime currentDateTime = LocalDateTime.now();
         isActive = currentDateTime.isAfter(checkInDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()) && currentDateTime.isBefore(checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         return isActive;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
+        review.setReservation(this);
+    }
+
+    public void setGuest(Guest guest) {
+        this.guest = guest;
+        guest.getReservations().add(this);
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+        room.getReservations().add(this);
     }
 
     @Override

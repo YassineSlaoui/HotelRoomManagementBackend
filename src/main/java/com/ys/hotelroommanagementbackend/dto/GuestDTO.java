@@ -1,6 +1,5 @@
 package com.ys.hotelroommanagementbackend.dto;
 
-import lombok.AccessLevel;
 import lombok.*;
 
 import java.util.Date;

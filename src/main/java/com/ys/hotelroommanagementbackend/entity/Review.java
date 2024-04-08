@@ -27,7 +27,7 @@ public class Review {
     @Column(name = "comment")
     private String comment;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne
     @JoinColumn(name = "reservation_id", referencedColumnName = "reservation_id", nullable = false)
     private Reservation reservation;
 

@@ -1,6 +1,6 @@
 package com.ys.hotelroommanagementbackend.mapper;
 
-import com.ys.hotelroommanagementbackend.dto.ReservatonDTO;
+import com.ys.hotelroommanagementbackend.dto.ReservationDTO;
 import com.ys.hotelroommanagementbackend.entity.Reservation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -20,8 +20,8 @@ public class ReservationMapper {
         this.reviewMapper = reviewMapper;
     }
 
-    public ReservatonDTO fromReservation(Reservation reservation) {
-        ReservatonDTO reservationDTO = new ReservatonDTO();
+    public ReservationDTO fromReservation(Reservation reservation) {
+        ReservationDTO reservationDTO = new ReservationDTO();
         BeanUtils.copyProperties(reservation, reservationDTO);
         reservationDTO.setRoom(roomMapper.fromRoom(reservation.getRoom()));
         reservationDTO.setGuest(guestMapper.fromGuest(reservation.getGuest()));
@@ -29,7 +29,7 @@ public class ReservationMapper {
         return reservationDTO;
     }
 
-    public Reservation toReservation(ReservatonDTO reservationDTO) {
+    public Reservation toReservation(ReservationDTO reservationDTO) {
         Reservation reservation = new Reservation();
         BeanUtils.copyProperties(reservationDTO, reservation);
         return reservation;
