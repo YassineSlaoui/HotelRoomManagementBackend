@@ -20,9 +20,5 @@ public class GuestDTO {
 
     private String contactInfo;
 
-    private Date createdDate;
-
-    private Date lastModifiedDate;
-
     private UserDTO user;
 }

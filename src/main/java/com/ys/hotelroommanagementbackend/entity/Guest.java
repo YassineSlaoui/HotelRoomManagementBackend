@@ -34,14 +34,6 @@ public class Guest {
     @Column(name = "contact_info", nullable = false)
     private String contactInfo;
 
-    @Basic
-    @Column(name = "created_date")
-    private Date createdDate;
-
-    @Basic
-    @Column(name = "last_modified_date")
-    private Date lastModifiedDate;
-
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
@@ -57,8 +49,6 @@ public class Guest {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", contactInfo='" + contactInfo + '\'' +
-                ", createdDate=" + createdDate +
-                ", lastModifiedDate=" + lastModifiedDate +
                 '}';
     }
 
@@ -67,12 +57,12 @@ public class Guest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Guest guest = (Guest) o;
-        return guestId == guest.guestId && Objects.equals(firstName, guest.firstName) && Objects.equals(lastName, guest.lastName) && Objects.equals(contactInfo, guest.contactInfo) && Objects.equals(createdDate, guest.createdDate) && Objects.equals(lastModifiedDate, guest.lastModifiedDate);
+        return guestId == guest.guestId && Objects.equals(firstName, guest.firstName) && Objects.equals(lastName, guest.lastName) && Objects.equals(contactInfo, guest.contactInfo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(guestId, firstName, lastName, contactInfo, createdDate, lastModifiedDate);
+        return Objects.hash(guestId, firstName, lastName, contactInfo);
     }
 
 }
