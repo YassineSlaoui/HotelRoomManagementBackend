@@ -27,6 +27,4 @@ public interface RoomService {
     RoomDTO updateRoom(RoomDTO roomDTO);
 
     void deleteRoom(Long roomId);
-
-    void bookRoomForGuest(Long roomId, Long guestId, Date checkInDate, Date checkOutDate);
 }

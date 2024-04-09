@@ -17,12 +17,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     private ReviewDao reviewDao;
     private ReviewMapper reviewMapper;
-    ReservationService reservationService;
 
-    public ReviewServiceImpl(ReviewDao reviewDao, ReviewMapper reviewMapper, ReservationService reservationService) {
+    public ReviewServiceImpl(ReviewDao reviewDao, ReviewMapper reviewMapper) {
         this.reviewDao = reviewDao;
         this.reviewMapper = reviewMapper;
-        this.reservationService = reservationService;
     }
 
     @Override

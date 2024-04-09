@@ -28,14 +28,12 @@ public class RoomServiceImpl implements RoomService {
 
     private RoomMapper roomMapper;
 
-    ReservationService reservationService;
 
     Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    public RoomServiceImpl(RoomDao roomDao, RoomMapper roomMapper, ReservationService reservationService) {
+    public RoomServiceImpl(RoomDao roomDao, RoomMapper roomMapper) {
         this.roomDao = roomDao;
         this.roomMapper = roomMapper;
-        this.reservationService = reservationService;
     }
 
     @Override
@@ -146,14 +144,5 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void deleteRoom(Long roomId) {
         roomDao.deleteById(roomId);
-    }
-
-    @Override
-    public void bookRoomForGuest(Long roomId, Long guestId, Date checkInDate, Date checkOutDate) {
-        reservationService.createReservation(ReservationDTO.builder()
-                .room(RoomDTO.builder().roomId(roomId).build())
-                .guest(GuestDTO.builder().guestId(guestId).build())
-                .checkInDate(checkInDate)
-                .checkOutDate(checkOutDate).build());
     }
 }
