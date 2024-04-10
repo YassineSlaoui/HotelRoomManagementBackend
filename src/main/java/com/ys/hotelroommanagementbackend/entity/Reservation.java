@@ -41,16 +41,6 @@ public class Reservation {
     @Column(name = "check_out_date")
     private Date checkOutDate;
 
-    @Basic
-    @Column(name = "is_active")
-    private Boolean isActive;
-
-    public Boolean getActive() {
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        isActive = currentDateTime.isAfter(checkInDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()) && currentDateTime.isBefore(checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-        return isActive;
-    }
-
     public void setReview(Review review) {
         this.review = review;
         review.setReservation(this);
@@ -72,7 +62,6 @@ public class Reservation {
                 "reservationId=" + reservationId +
                 ", checkInDate=" + checkInDate +
                 ", checkOutDate=" + checkOutDate +
-                ", isActive=" + isActive +
                 '}';
     }
 
@@ -81,12 +70,12 @@ public class Reservation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Reservation that = (Reservation) o;
-        return Objects.equals(reservationId, that.reservationId) && Objects.equals(checkInDate, that.checkInDate) && Objects.equals(checkOutDate, that.checkOutDate) && Objects.equals(isActive, that.isActive);
+        return Objects.equals(reservationId, that.reservationId) && Objects.equals(checkInDate, that.checkInDate) && Objects.equals(checkOutDate, that.checkOutDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(reservationId, checkInDate, checkOutDate, isActive);
+        return Objects.hash(reservationId, checkInDate, checkOutDate);
     }
 
 }

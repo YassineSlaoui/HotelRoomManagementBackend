@@ -1,11 +1,14 @@
 package com.ys.hotelroommanagementbackend.service.impl;
 
+import com.ys.hotelroommanagementbackend.dao.ReservationDao;
 import com.ys.hotelroommanagementbackend.dao.RoomDao;
 import com.ys.hotelroommanagementbackend.dto.FilterDTO;
 import com.ys.hotelroommanagementbackend.dto.GuestDTO;
 import com.ys.hotelroommanagementbackend.dto.ReservationDTO;
 import com.ys.hotelroommanagementbackend.dto.RoomDTO;
+import com.ys.hotelroommanagementbackend.entity.Reservation;
 import com.ys.hotelroommanagementbackend.entity.Room;
+import com.ys.hotelroommanagementbackend.mapper.ReservationMapper;
 import com.ys.hotelroommanagementbackend.mapper.RoomMapper;
 import com.ys.hotelroommanagementbackend.service.ReservationService;
 import com.ys.hotelroommanagementbackend.service.RoomService;
@@ -27,16 +30,19 @@ import java.util.List;
 @EnableScheduling
 public class RoomServiceImpl implements RoomService {
 
+    private ReservationMapper reservationMapper;
+    private ReservationDao reservationDao;
     private RoomDao roomDao;
 
     private RoomMapper roomMapper;
 
-
     Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    public RoomServiceImpl(RoomDao roomDao, RoomMapper roomMapper) {
+    public RoomServiceImpl(RoomDao roomDao, RoomMapper roomMapper, ReservationDao reservationDao, ReservationMapper reservationMapper) {
         this.roomDao = roomDao;
         this.roomMapper = roomMapper;
+        this.reservationDao = reservationDao;
+        this.reservationMapper = reservationMapper;
     }
 
     @Override
@@ -138,6 +144,11 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void deleteRoom(Long roomId) {
+        List<ReservationDTO> currentOrFutureReservations = reservationDao
+                .findReservationsByCheckInDateAfterOrCheckOutDateAfter(new Date(), new Date())
+                .stream().map(reservationMapper::fromReservation).toList();
+        if (!currentOrFutureReservations.isEmpty())
+            throw new RuntimeException("Trying to delete a room that has ongoing and/or future reservations, reservations: " + currentOrFutureReservations);
         roomDao.deleteById(roomId);
     }
 }

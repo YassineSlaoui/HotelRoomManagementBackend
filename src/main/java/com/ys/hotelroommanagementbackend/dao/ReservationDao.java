@@ -31,6 +31,8 @@ public interface ReservationDao extends JpaRepository<Reservation, Long> {
 
     Optional<Reservation> findReservationByRoomAndCheckInDateBeforeAndCheckOutDateAfter(Room room, Date checkInDate, Date checkOutDate);
 
+    List<Reservation> findReservationsByCheckInDateAfterOrCheckOutDateAfter(Date startCheckInDate, Date endCheckInDate);
+
     @Query("SELECT r FROM Reservation r " +
             "WHERE r.room = :room " +
             "AND r.checkOutDate > :checkInDate " +

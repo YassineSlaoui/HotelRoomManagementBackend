@@ -39,7 +39,7 @@ public class Guest {
     private User user;
 
     @Builder.Default
-    @OneToMany(mappedBy = "guest")
+    @OneToMany(mappedBy = "guest", cascade = CascadeType.REMOVE)
     private Set<Reservation> reservations = new HashSet<>();
 
     @Override

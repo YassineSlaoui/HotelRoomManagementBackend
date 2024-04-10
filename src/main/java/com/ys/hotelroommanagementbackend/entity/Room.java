@@ -48,7 +48,7 @@ public class Room {
     private List<String> photoURLs = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room",cascade = CascadeType.REMOVE)
     private Set<Reservation> reservations = new HashSet<>();
 
     @Override

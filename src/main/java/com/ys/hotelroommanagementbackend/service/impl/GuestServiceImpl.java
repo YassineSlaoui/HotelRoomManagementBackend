@@ -92,9 +92,6 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     public void deleteGuest(Long guestId) {
-        Guest guestToDelete = getGuestById(guestId);
-        for (Reservation reservation : guestToDelete.getReservations())
-            reservation.setGuest(null);
-        guestDao.delete(guestToDelete);
+        guestDao.deleteById(guestId);
     }
 }
