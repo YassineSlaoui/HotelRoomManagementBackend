@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReservationMapper {
 
-    private RoomMapper roomMapper;
+    private final RoomMapper roomMapper;
 
-    private GuestMapper guestMapper;
+    private final GuestMapper guestMapper;
 
-    private ReviewMapper reviewMapper;
+    private final ReviewMapper reviewMapper;
 
     public ReservationMapper(RoomMapper roomMapper, GuestMapper guestMapper, ReviewMapper reviewMapper) {
         this.roomMapper = roomMapper;

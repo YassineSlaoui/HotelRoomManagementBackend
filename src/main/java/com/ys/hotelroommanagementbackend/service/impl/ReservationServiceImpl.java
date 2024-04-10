@@ -29,14 +29,14 @@ import java.util.stream.Collectors;
 @Transactional
 public class ReservationServiceImpl implements ReservationService {
 
-    private ReservationDao reservationDao;
-    private ReservationMapper reservationMapper;
-    private GuestService guestService;
-    private RoomService roomService;
-    private ReviewService reviewService;
-    private RoomMapper roomMapper;
+    private final ReservationDao reservationDao;
+    private final ReservationMapper reservationMapper;
+    private final GuestService guestService;
+    private final RoomService roomService;
+    private final ReviewService reviewService;
+    private final RoomMapper roomMapper;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     public ReservationServiceImpl(ReservationDao reservationDao, ReservationMapper reservationMapper, GuestService guestService, RoomService roomService, ReviewService reviewService, RoomMapper roomMapper) {
         this.reservationDao = reservationDao;
@@ -56,44 +56,44 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Page<ReservationDTO> getAllReservations(int page, int size) {
         return reservationDao.findAll(PageRequest.of(page, size))
-                .map(reservation -> reservationMapper.fromReservation(reservation));
+                .map(reservationMapper::fromReservation);
     }
 
     @Override
     public Page<ReservationDTO> getReservationsByGuestAndRoom(Long guestId, Long roomId, int page, int size) {
         return reservationDao.findReservationsByGuestAndRoom(guestService.getGuestById(guestId),
                         roomService.getRoomById(roomId), PageRequest.of(page, size))
-                .map(reservation -> reservationMapper.fromReservation(reservation));
+                .map(reservationMapper::fromReservation);
     }
 
     @Override
     public Page<ReservationDTO> getReservationsByGuest(Long guestId, int page, int size) {
         return reservationDao.findReservationsByGuest(guestService.getGuestById(guestId), PageRequest.of(page, size))
-                .map(reservation -> reservationMapper.fromReservation(reservation));
+                .map(reservationMapper::fromReservation);
     }
 
     @Override
     public Page<ReservationDTO> getReservationsByRoom(Long roomId, int page, int size) {
         return reservationDao.findReservationsByRoom(roomService.getRoomById(roomId), PageRequest.of(page, size))
-                .map(reservation -> reservationMapper.fromReservation(reservation));
+                .map(reservationMapper::fromReservation);
     }
 
     @Override
     public Page<ReservationDTO> getReservationsEndingOn(Date endDate, int page, int size) {
         return reservationDao.findReservationsByCheckOutDate(endDate, PageRequest.of(page, size))
-                .map(reservation -> reservationMapper.fromReservation(reservation));
+                .map(reservationMapper::fromReservation);
     }
 
     @Override
     public Page<ReservationDTO> getReservationsStartingOn(Date startDate, int page, int size) {
         return reservationDao.findReservationsByCheckInDate(startDate, PageRequest.of(page, size))
-                .map(reservation -> reservationMapper.fromReservation(reservation));
+                .map(reservationMapper::fromReservation);
     }
 
     @Override
     public Page<ReservationDTO> getReservationsStartingFrom(Date startDate, int page, int size) {
         return reservationDao.findReservationsByCheckInDateAfter(startDate, PageRequest.of(page, size))
-                .map(reservation -> reservationMapper.fromReservation(reservation));
+                .map(reservationMapper::fromReservation);
     }
 
     @Override

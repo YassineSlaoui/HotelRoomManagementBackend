@@ -6,7 +6,6 @@ import java.sql.Statement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -31,10 +30,13 @@ import org.springframework.core.env.Environment;
 @Configuration
 public class DataSourceConfig {
 
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
+    public DataSourceConfig(Environment environment) {
+        this.environment = environment;
+    }
 
     @Bean
     public DataSource dataSource() {

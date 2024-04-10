@@ -4,7 +4,6 @@ import com.ys.hotelroommanagementbackend.dao.ReviewDao;
 import com.ys.hotelroommanagementbackend.dto.ReviewDTO;
 import com.ys.hotelroommanagementbackend.entity.Review;
 import com.ys.hotelroommanagementbackend.mapper.ReviewMapper;
-import com.ys.hotelroommanagementbackend.service.ReservationService;
 import com.ys.hotelroommanagementbackend.service.ReviewService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ReviewServiceImpl implements ReviewService {
 
-    private ReviewDao reviewDao;
-    private ReviewMapper reviewMapper;
+    private final ReviewDao reviewDao;
+    private final ReviewMapper reviewMapper;
 
     public ReviewServiceImpl(ReviewDao reviewDao, ReviewMapper reviewMapper) {
         this.reviewDao = reviewDao;
@@ -30,17 +29,17 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Page<ReviewDTO> getAllReviews(int page, int size) {
-        return reviewDao.findAll(PageRequest.of(page, size)).map(review -> reviewMapper.fromReview(review));
+        return reviewDao.findAll(PageRequest.of(page, size)).map(reviewMapper::fromReview);
     }
 
     @Override
     public Page<ReviewDTO> getRoomReviews(Long roomId, int page, int size) {
-        return reviewDao.findReviewsByRoom(roomId, PageRequest.of(page, size)).map(review -> reviewMapper.fromReview(review));
+        return reviewDao.findReviewsByRoom(roomId, PageRequest.of(page, size)).map(reviewMapper::fromReview);
     }
 
     @Override
     public Page<ReviewDTO> getGuestReviews(Long guestId, int page, int size) {
-        return reviewDao.findReviewsByGuest(guestId, PageRequest.of(page, size)).map(review -> reviewMapper.fromReview(review));
+        return reviewDao.findReviewsByGuest(guestId, PageRequest.of(page, size)).map(reviewMapper::fromReview);
     }
 
     @Override

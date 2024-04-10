@@ -12,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    private UserDao userDao;
+    private final UserDao userDao;
 
-    private RoleService roleService;
+    private final RoleService roleService;
 
     public UserServiceImpl(UserDao userDao, RoleService roleService) {
         this.userDao = userDao;

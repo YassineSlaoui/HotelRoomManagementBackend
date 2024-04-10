@@ -4,6 +4,7 @@ import com.ys.hotelroommanagementbackend.dto.ReviewDTO;
 import com.ys.hotelroommanagementbackend.entity.Review;
 import org.springframework.data.domain.Page;
 
+@SuppressWarnings("unused")
 public interface ReviewService {
 
     Review getReviewById(Long reviewId);

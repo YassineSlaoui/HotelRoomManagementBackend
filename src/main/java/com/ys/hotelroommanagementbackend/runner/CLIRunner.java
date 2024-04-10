@@ -14,18 +14,19 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings({"CommentedOutCode", "unused"})
 @Component
 public class CLIRunner implements CommandLineRunner {
 
-    RoleService roleService;
-    UserService userService;
-    GuestService guestService;
-    RoomService roomService;
-    ReservationService reservationService;
-    ReviewService reviewService;
-    List<GuestDTO> guestDTOS = new ArrayList<>();
-    List<RoomDTO> roomDTOS = new ArrayList<>();
-    List<ReservationDTO> reservationDTOS = new ArrayList<>();
+    final RoleService roleService;
+    final UserService userService;
+    final GuestService guestService;
+    final RoomService roomService;
+    final ReservationService reservationService;
+    final ReviewService reviewService;
+    final List<GuestDTO> guestDTOS = new ArrayList<>();
+    final List<RoomDTO> roomDTOS = new ArrayList<>();
+    final List<ReservationDTO> reservationDTOS = new ArrayList<>();
 
     public CLIRunner(RoleService roleService, UserService userService, GuestService guestService, RoomService roomService, ReservationService reservationService, ReviewService reviewService) {
         this.roleService = roleService;
@@ -37,7 +38,7 @@ public class CLIRunner implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         createRoles();
         createAdmin();
         createGuests();

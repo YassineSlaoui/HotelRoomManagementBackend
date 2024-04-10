@@ -2,9 +2,7 @@ package com.ys.hotelroommanagementbackend.service.impl;
 
 import com.ys.hotelroommanagementbackend.dao.GuestDao;
 import com.ys.hotelroommanagementbackend.dto.GuestDTO;
-import com.ys.hotelroommanagementbackend.dto.UserDTO;
 import com.ys.hotelroommanagementbackend.entity.Guest;
-import com.ys.hotelroommanagementbackend.entity.Reservation;
 import com.ys.hotelroommanagementbackend.entity.User;
 import com.ys.hotelroommanagementbackend.mapper.GuestMapper;
 import com.ys.hotelroommanagementbackend.mapper.UserMapper;
@@ -22,11 +20,11 @@ import java.util.List;
 public class GuestServiceImpl implements GuestService {
 
     private final UserMapper userMapper;
-    private GuestDao guestDao;
+    private final GuestDao guestDao;
 
-    private GuestMapper guestMapper;
+    private final GuestMapper guestMapper;
 
-    private UserService userService;
+    private final UserService userService;
 
     public GuestServiceImpl(GuestDao guestDao, GuestMapper guestMapper, UserService userService, UserMapper userMapper) {
         this.guestDao = guestDao;
@@ -37,17 +35,17 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     public List<GuestDTO> getAllGuests() {
-        return guestDao.findAll().stream().map(guest -> guestMapper.fromGuest(guest)).toList();
+        return guestDao.findAll().stream().map(guestMapper::fromGuest).toList();
     }
 
     @Override
     public Page<GuestDTO> getGuestsByName(String name, int page, int size) {
-        return guestDao.findGuestByName(name, PageRequest.of(page, size)).map(guest -> guestMapper.fromGuest(guest));
+        return guestDao.findGuestByName(name, PageRequest.of(page, size)).map(guestMapper::fromGuest);
     }
 
     @Override
     public Page<GuestDTO> getAllGuests(int page, int size) {
-        return guestDao.findAll(PageRequest.of(page, size)).map(guest -> guestMapper.fromGuest(guest));
+        return guestDao.findAll(PageRequest.of(page, size)).map(guestMapper::fromGuest);
     }
 
     @Override

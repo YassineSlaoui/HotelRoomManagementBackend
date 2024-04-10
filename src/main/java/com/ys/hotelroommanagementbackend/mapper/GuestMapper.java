@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class GuestMapper {
 
-    UserMapper userMapper;
+    final UserMapper userMapper;
 
     public GuestMapper(UserMapper userMapper) {
         this.userMapper = userMapper;

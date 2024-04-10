@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+@SuppressWarnings({"UnusedReturnValue", "unused"})
 public interface GuestService {
 
     List<GuestDTO> getAllGuests();

@@ -5,9 +5,9 @@ import com.ys.hotelroommanagementbackend.dto.RoomDTO;
 import com.ys.hotelroommanagementbackend.entity.Room;
 import org.springframework.data.domain.Page;
 
-import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings({"UnusedReturnValue", "unused"})
 public interface RoomService {
 
     Room getRoomById(Long roomId);

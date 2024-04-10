@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 public interface ReservationService {
 
     Reservation getReservationById(Long reservationId);

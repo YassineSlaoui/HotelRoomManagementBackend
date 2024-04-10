@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public interface ReservationDao extends JpaRepository<Reservation, Long> {
 
     Page<Reservation> findReservationsByGuest(Guest guest, Pageable pageable);

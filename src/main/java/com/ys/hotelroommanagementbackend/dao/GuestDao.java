@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public interface GuestDao extends JpaRepository<Guest, Long> {
 
     @Query("SELECT g FROM Guest AS g " +

@@ -2,6 +2,7 @@ package com.ys.hotelroommanagementbackend.service;
 
 import com.ys.hotelroommanagementbackend.entity.User;
 
+@SuppressWarnings("unused")
 public interface UserService {
 
     User getUserByEmail(String email);
