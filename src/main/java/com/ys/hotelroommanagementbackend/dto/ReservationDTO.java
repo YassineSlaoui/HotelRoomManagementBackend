@@ -11,7 +11,6 @@ import java.util.Date;
 @Builder
 public class ReservationDTO {
 
-    @Setter(AccessLevel.NONE)
     private Long reservationId;
 
     private RoomDTO room;

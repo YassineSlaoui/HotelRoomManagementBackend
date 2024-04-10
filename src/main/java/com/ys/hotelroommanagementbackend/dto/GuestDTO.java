@@ -11,7 +11,6 @@ import java.util.Date;
 @Builder
 public class GuestDTO {
 
-    @Setter(AccessLevel.NONE)
     private long guestId;
 
     private String firstName;

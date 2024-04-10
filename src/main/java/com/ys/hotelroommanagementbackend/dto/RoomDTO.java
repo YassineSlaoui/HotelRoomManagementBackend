@@ -12,7 +12,6 @@ import java.util.*;
 @Builder
 public class RoomDTO {
 
-    @Setter(AccessLevel.NONE)
     private Long roomId;
 
     private String roomNumber;
