@@ -1,116 +1,104 @@
 package com.ys.hotelroommanagementbackend.runner;
 
-import com.ys.hotelroommanagementbackend.dao.*;
-import com.ys.hotelroommanagementbackend.entity.Guest;
-import com.ys.hotelroommanagementbackend.entity.Role;
-import com.ys.hotelroommanagementbackend.entity.User;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ys.hotelroommanagementbackend.dto.GuestDTO;
+import com.ys.hotelroommanagementbackend.dto.ReservationDTO;
+import com.ys.hotelroommanagementbackend.dto.RoomDTO;
+import com.ys.hotelroommanagementbackend.dto.UserDTO;
+import com.ys.hotelroommanagementbackend.service.*;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Component
-public class CLIRunner implements CommandLineRunner, InitializingBean {
+public class CLIRunner implements CommandLineRunner {
 
-    @Autowired
-    RoleDao roleDao;
+    RoleService roleService;
+    UserService userService;
+    GuestService guestService;
+    RoomService roomService;
+    ReservationService reservationService;
+    ReviewService reviewService;
+    List<GuestDTO> guestDTOS = new ArrayList<>();
+    List<RoomDTO> roomDTOS = new ArrayList<>();
 
-    @Autowired
-    UserDao userDao;
-
-    @Autowired
-    GuestDao guestDao;
-
-    @Autowired
-    RoomDao roomDao;
-
-    @Autowired
-    ReservationDao reservationDao;
-
-    @Autowired
-    ReviewDao reviewDao;
+    public CLIRunner(RoleService roleService, UserService userService, GuestService guestService, RoomService roomService, ReservationService reservationService, ReviewService reviewService) {
+        this.roleService = roleService;
+        this.userService = userService;
+        this.guestService = guestService;
+        this.roomService = roomService;
+        this.reservationService = reservationService;
+        this.reviewService = reviewService;
+    }
 
     @Override
     public void run(String... args) throws Exception {
         createRoles();
-        updateRoles();
-        readRoles();
-        createUsers();
-        updateUser();
-        readUser();
-        User janeUser = User.builder().username("jane").email("jane@domain.com").password("jane").build();
-        janeUser = userDao.save(janeUser);
-        janeUser.assignRole(roleDao.findAll().getFirst());
-        userDao.save(janeUser);
-        guestDao.save(Guest.builder().firstName("Jane").lastName("Doe").contactInfo("None").user(janeUser).build());
-//        guestDao.deleteById(guestDao.findGuestByUsername("jane").get().getGuestId());
-        userDao.findAll(PageRequest.of(0, 2)).forEach(System.out::println);
+        createAdmin();
+        createGuests();
+        createRooms();
+        createReservations();
     }
-
 
     private void createRoles() {
-        roleDao.saveAll(Arrays.asList(
-                Role.builder().name("admin").build(),
-                Role.builder().name("guest").build()
-        ));
+        Arrays.asList("Admin", "Guest").forEach(roleService::createRole);
     }
 
-    private void readRoles() {
-        roleDao.findAll().forEach(System.out::println);
+    private void createAdmin() {
+        userService.createUser("admin", "admin@hotel-domain.com", "1234");
+        userService.assignRoleToUser("admin@hotel-domain.com", "admin");
     }
 
-    /**
-     * This will make the role names titles
-     *
-     * @author Yassine Slaoui
-     */
-    private void updateRoles() {
-        roleDao.findAll().forEach(role -> {
-            role.setName(role.getName().substring(0, 1).toUpperCase() + role.getName().substring(1).toLowerCase());
-            roleDao.save(role);
-        });
+    private void createGuests() {
+        for (int i = 1; i < 11; i++) {
+            GuestDTO guestDTO = GuestDTO.builder()
+                    .firstName("Guest" + i + "'s First Name")
+                    .lastName("Guest" + i + "'s Last Name")
+                    .contactInfo("Guest" + i + "'s Contact Info")
+                    .user(UserDTO.builder()
+                            .username("Guest" + i)
+                            .email("Guest" + i + "@hotel-domain.com")
+                            .password("1234")
+                            .build())
+                    .build();
+            GuestDTO savedGuestDTO = guestService.createGuest(guestDTO);
+            userService.assignRoleToUser("Guest" + i + "@hotel-domain.com", "guest");
+            guestDTOS.add(savedGuestDTO);
+        }
     }
 
-    private void createUsers() {
-        userDao.saveAll(Arrays.asList(
-                User.builder().username("user1").email("user1@domain.com").password("pass1").build(),
-                User.builder().username("user2").email("user2@domain.com").password("pass2").build(),
-                User.builder().username("user3").email("user3@domain.com").password("pass3").build(),
-                User.builder().username("user4").email("user4@domain.com").password("pass4").build()));
-        userDao.findAll().forEach(user -> {
-            user.assignRole(roleDao.findAll().getFirst());
-            userDao.save(user);
-        });
+    private void createRooms() {
+        for (int i = 1; i < 11; i++) {
+            RoomDTO roomDTO = RoomDTO.builder()
+                    .roomNumber("Room" + i)
+                    .price((double) (i * 10))
+                    .roomType(i % 3 == 0 ? "Single Room" : i % 3 == 1 ? "Double Room" : "Triple Room")
+                    .capacity(i % 3 == 0 ? 1 : i % 3 == 1 ? 2 : 3)
+                    .description("A good room, like all the other rooms!")
+                    .available(true)
+                    .build();
+            roomDTO = roomService.createRoom(roomDTO);
+            roomDTOS.add(roomDTO);
+        }
     }
 
-    private void readUser() {
-        userDao.findUserByEmail("user1@domain.com").ifPresentOrElse(user -> {
-            System.out.println(user);
-            user.getRoles().forEach(role -> System.out.println("Role: " + role.getName()));
-        }, () -> System.err.println("User Not Found"));
-        userDao.findUserByEmail("user3@domain.com").ifPresentOrElse(System.out::println, () -> System.err.println("User Not Found"));
-        userDao.findUserByEmail("user3@domain.com").ifPresentOrElse(System.out::println, () -> System.err.println("User Not Found"));
-    }
+    private void createReservations() {
+        reservationService.createReservation(ReservationDTO.builder()
+                .room(roomDTOS.get(1))
+                .guest(guestDTOS.get(2))
+                .checkInDate(DateUtils.addMinutes(new Date(), 1))
+                .checkOutDate(DateUtils.addMinutes(new Date(), 2))
+                .build());
 
-
-    private void updateUser() {
-        User user = userDao.findById(2L).orElseThrow(() -> new EntityNotFoundException("User with id 2 not found"));
-        user.setEmail("user2new@domain.com");
-        userDao.save(user);
-
-    }
-
-    private void deleteUser() {
-        userDao.deleteById(3L);
-    }
-
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-//        jdbcTemplate.execute("CREATE EXTENSION IF NOT EXISTS citext;");
+        reservationService.createReservation(ReservationDTO.builder()
+                .room(roomDTOS.get(2))
+                .guest(guestDTOS.get(5))
+                .checkInDate(DateUtils.addMinutes(new Date(), 1))
+                .checkOutDate(DateUtils.addMinutes(new Date(), 3))
+                .build());
     }
 }
