@@ -16,5 +16,6 @@ public class UserDTO {
 
     private String email;
 
+    @ToString.Exclude
     private String password;
 }

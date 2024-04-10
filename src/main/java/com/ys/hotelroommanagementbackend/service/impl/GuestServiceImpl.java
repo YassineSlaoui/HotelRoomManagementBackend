@@ -2,10 +2,12 @@ package com.ys.hotelroommanagementbackend.service.impl;
 
 import com.ys.hotelroommanagementbackend.dao.GuestDao;
 import com.ys.hotelroommanagementbackend.dto.GuestDTO;
+import com.ys.hotelroommanagementbackend.dto.UserDTO;
 import com.ys.hotelroommanagementbackend.entity.Guest;
 import com.ys.hotelroommanagementbackend.entity.Reservation;
 import com.ys.hotelroommanagementbackend.entity.User;
 import com.ys.hotelroommanagementbackend.mapper.GuestMapper;
+import com.ys.hotelroommanagementbackend.mapper.UserMapper;
 import com.ys.hotelroommanagementbackend.service.GuestService;
 import com.ys.hotelroommanagementbackend.service.UserService;
 import org.springframework.data.domain.Page;
@@ -19,16 +21,18 @@ import java.util.List;
 @Transactional
 public class GuestServiceImpl implements GuestService {
 
+    private final UserMapper userMapper;
     private GuestDao guestDao;
 
     private GuestMapper guestMapper;
 
     private UserService userService;
 
-    public GuestServiceImpl(GuestDao guestDao, GuestMapper guestMapper, UserService userService) {
+    public GuestServiceImpl(GuestDao guestDao, GuestMapper guestMapper, UserService userService, UserMapper userMapper) {
         this.guestDao = guestDao;
         this.guestMapper = guestMapper;
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -73,7 +77,8 @@ public class GuestServiceImpl implements GuestService {
     public GuestDTO updateGuest(GuestDTO guestDTO) {
         Guest loadedGuest = getGuestById(guestDTO.getGuestId());
         Guest guestToUpdate = guestMapper.toGuest(guestDTO);
-        guestToUpdate.setUser(loadedGuest.getUser());
+        User updatedGuestUser = userService.updateUser(userMapper.toUser(guestDTO.getUser()));
+        guestToUpdate.setUser(updatedGuestUser);
         guestToUpdate.setReservations(loadedGuest.getReservations());
         Guest updatedGuest = guestDao.save(guestToUpdate);
         return guestMapper.fromGuest(updatedGuest);

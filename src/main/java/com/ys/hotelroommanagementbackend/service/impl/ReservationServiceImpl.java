@@ -105,7 +105,8 @@ public class ReservationServiceImpl implements ReservationService {
                         ", and checkInDate: " + checkInDate + " not found")));
     }
 
-    private ReservationDTO checkAndSaveReservation(ReservationDTO reservationDTO, Reservation reservationToBeSaved) {
+    private ReservationDTO checkAndSaveReservation(ReservationDTO reservationDTO) {
+        Reservation reservationToBeSaved = reservationMapper.toReservation(reservationDTO);
         reservationToBeSaved.setGuest(guestService.getGuestById(reservationDTO.getGuest().getGuestId()));
 
         Room roomToBook = roomService.getRoomById(reservationDTO.getRoom().getRoomId());
@@ -124,15 +125,13 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationDTO createReservation(ReservationDTO reservationDTO) {
-        Reservation reservationToBeSaved = reservationMapper.toReservation(reservationDTO);
-        return checkAndSaveReservation(reservationDTO, reservationToBeSaved);
+        return checkAndSaveReservation(reservationDTO);
     }
 
 
     @Override
     public ReservationDTO updateReservation(ReservationDTO reservationDTO) {
-        Reservation reservationToBeUpdated = getReservationById(reservationDTO.getReservationId());
-        return checkAndSaveReservation(reservationDTO, reservationToBeUpdated);
+        return checkAndSaveReservation(reservationDTO);
     }
 
     @Override
