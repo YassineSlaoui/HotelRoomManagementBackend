@@ -25,6 +25,7 @@ public class CLIRunner implements CommandLineRunner {
     ReviewService reviewService;
     List<GuestDTO> guestDTOS = new ArrayList<>();
     List<RoomDTO> roomDTOS = new ArrayList<>();
+    List<ReservationDTO> reservationDTOS = new ArrayList<>();
 
     public CLIRunner(RoleService roleService, UserService userService, GuestService guestService, RoomService roomService, ReservationService reservationService, ReviewService reviewService) {
         this.roleService = roleService;
@@ -42,6 +43,12 @@ public class CLIRunner implements CommandLineRunner {
         createGuests();
         createRooms();
         createReservations();
+        updateGuests();
+        updateRooms();
+        updateReservations();
+//        removeGuests();
+//        removeRooms();
+//        removeReservations();
     }
 
     private void createRoles() {
@@ -87,18 +94,69 @@ public class CLIRunner implements CommandLineRunner {
     }
 
     private void createReservations() {
-        reservationService.createReservation(ReservationDTO.builder()
+        reservationDTOS.add(reservationService.createReservation(ReservationDTO.builder()
                 .room(roomDTOS.get(1))
                 .guest(guestDTOS.get(2))
                 .checkInDate(DateUtils.addMinutes(new Date(), 1))
                 .checkOutDate(DateUtils.addMinutes(new Date(), 2))
-                .build());
+                .build()));
 
-        reservationService.createReservation(ReservationDTO.builder()
+        reservationDTOS.add(reservationService.createReservation(ReservationDTO.builder()
                 .room(roomDTOS.get(2))
-                .guest(guestDTOS.get(5))
+                .guest(guestDTOS.get(4))
                 .checkInDate(DateUtils.addMinutes(new Date(), 1))
                 .checkOutDate(DateUtils.addMinutes(new Date(), 3))
-                .build());
+                .build()));
+    }
+
+    public void updateGuests() {
+        GuestDTO guestToUpdate = guestDTOS.get(4);
+        guestToUpdate.setFirstName("Guest5's Updated First Name");
+        guestToUpdate.setLastName("Guest5's Updated Last Name");
+        guestToUpdate.setContactInfo("Guest5's Updated Contact Info");
+        UserDTO guestUserToUpdate = guestToUpdate.getUser();
+        guestUserToUpdate.setUsername("updated_guest5");
+        guestUserToUpdate.setEmail("updated_guest5@hotel-domain.com");
+        guestUserToUpdate.setPassword("updated_1234");
+        guestService.updateGuest(guestToUpdate);
+    }
+
+    public void updateRooms() {
+        RoomDTO roomToUpdate = roomDTOS.get(4);
+        roomToUpdate.setRoomNumber("Renovated Room 5");
+        roomToUpdate.setRoomType("Suite");
+        roomToUpdate.setDescription("Oh, this room isn't like the others.");
+        roomToUpdate.setCapacity(10);
+        roomToUpdate.setPrice(9999.99);
+        roomService.updateRoom(roomToUpdate);
+    }
+
+    public void updateReservations() {
+        ReservationDTO reservationToUpdate = reservationDTOS.get(1);
+        reservationToUpdate.setCheckInDate(DateUtils.addDays(new Date(), 2));
+        reservationToUpdate.setCheckOutDate(DateUtils.addDays(new Date(), 5));
+        reservationToUpdate.setRoom(roomDTOS.get(4));
+        reservationService.updateReservation(reservationToUpdate);
+
+        reservationToUpdate = reservationDTOS.getFirst();
+        reservationToUpdate.setCheckInDate(DateUtils.addDays(new Date(), 5));
+        reservationToUpdate.setCheckOutDate(DateUtils.addDays(new Date(), 7));
+        reservationToUpdate.setRoom(roomDTOS.get(4));
+        reservationService.updateReservation(reservationToUpdate);
+    }
+
+    public void removeGuests() {
+        guestService.deleteGuest(guestDTOS.get(4).getGuestId());
+        guestDTOS.remove(guestDTOS.get(4));
+    }
+
+    public void removeRooms() {
+        roomService.deleteRoom(roomDTOS.get(4).getRoomId());
+        roomDTOS.remove(roomDTOS.getFirst());
+    }
+
+    public void removeReservations() {
+        reservationService.deleteReservation(reservationDTOS.getFirst().getReservationId());
+        reservationDTOS.remove(reservationDTOS.getFirst());
     }
 }
