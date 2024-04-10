@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public interface ReservationService {
 
