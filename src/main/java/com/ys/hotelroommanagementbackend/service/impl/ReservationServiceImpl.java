@@ -11,6 +11,8 @@ import com.ys.hotelroommanagementbackend.service.ReservationService;
 import com.ys.hotelroommanagementbackend.service.ReviewService;
 import com.ys.hotelroommanagementbackend.service.RoomService;
 import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,6 +35,8 @@ public class ReservationServiceImpl implements ReservationService {
     private RoomService roomService;
     private ReviewService reviewService;
     private RoomMapper roomMapper;
+
+    Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     public ReservationServiceImpl(ReservationDao reservationDao, ReservationMapper reservationMapper, GuestService guestService, RoomService roomService, ReviewService reviewService, RoomMapper roomMapper) {
         this.reservationDao = reservationDao;
@@ -101,24 +105,34 @@ public class ReservationServiceImpl implements ReservationService {
                         ", and checkInDate: " + checkInDate + " not found")));
     }
 
-    @Override
-    public ReservationDTO createReservation(ReservationDTO reservationDTO) {
-        Reservation reservationToBeSaved = reservationMapper.toReservation(reservationDTO);
+    private ReservationDTO checkAndSaveReservation(ReservationDTO reservationDTO, Reservation reservationToBeSaved) {
         reservationToBeSaved.setGuest(guestService.getGuestById(reservationDTO.getGuest().getGuestId()));
+
         Room roomToBook = roomService.getRoomById(reservationDTO.getRoom().getRoomId());
+        List<ReservationDTO> overlappingReservations = getOverlappingReservations(roomToBook.getRoomId(), reservationToBeSaved.getCheckInDate(), reservationToBeSaved.getCheckOutDate());
+        if (!overlappingReservations.isEmpty())
+            throw new RuntimeException("Room is not available, overlapping with reservations: " + overlappingReservations);
+
         reservationToBeSaved.setRoom(roomToBook);
+
+        if (reservationDTO.getReview() != null)
+            reservationToBeSaved.setReview(reviewService.getReviewById(reservationDTO.getReview().getReviewId()));
+
         Reservation savedReservation = reservationDao.save(reservationToBeSaved);
         return reservationMapper.fromReservation(savedReservation);
     }
 
     @Override
+    public ReservationDTO createReservation(ReservationDTO reservationDTO) {
+        Reservation reservationToBeSaved = reservationMapper.toReservation(reservationDTO);
+        return checkAndSaveReservation(reservationDTO, reservationToBeSaved);
+    }
+
+
+    @Override
     public ReservationDTO updateReservation(ReservationDTO reservationDTO) {
         Reservation reservationToBeUpdated = getReservationById(reservationDTO.getReservationId());
-        reservationToBeUpdated.setGuest(guestService.getGuestById(reservationDTO.getGuest().getGuestId()));
-        reservationToBeUpdated.setRoom(roomService.getRoomById(reservationDTO.getRoom().getRoomId()));
-        reservationToBeUpdated.setReview(reviewService.getReviewById(reservationDTO.getReview().getReviewId()));
-        Reservation updatedReservation = reservationDao.save(reservationToBeUpdated);
-        return reservationMapper.fromReservation(updatedReservation);
+        return checkAndSaveReservation(reservationDTO, reservationToBeUpdated);
     }
 
     @Override
@@ -135,25 +149,49 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public boolean isRoomAvailable(Long roomId, Date checkInDate, Date checkOutDate) {
-        return reservationDao.isRoomReserved(roomService.getRoomById(roomId), checkInDate, checkOutDate);
+        return reservationDao.findOverlappingReservationsForRoom(roomService.getRoomById(roomId), checkInDate, checkOutDate).isEmpty();
     }
 
+    @Override
+    public List<ReservationDTO> getOverlappingReservations(Long roomId, Date checkInDate, Date checkOutDate) {
+        return reservationDao.findOverlappingReservationsForRoom(roomService.getRoomById(roomId), checkInDate, checkOutDate).stream().map(reservationMapper::fromReservation).toList();
+    }
+
+    /**
+     * This method will run At midnight, every day, to update the rooms availabilities.
+     * <br>
+     * We can make it @Scheduled(cron = "0 0 13 * * *") to run every day at 1 PM instead.
+     *
+     * @author Yassine Slaoui
+     */
     @Scheduled(cron = "0 0 0 * * *")
     @Override
     public void updateRoomsAvailability() {
+        // Here I'm getting all today's reservations at once,
+        // instead of getting each room's today's reservation on its own in the room's loop down below,
+        // to lighten the load on the database.
         Date currentDate = new Date();
         Date tomorrowDate = DateUtils.addDays(currentDate, 1);
 
-        List<Reservation> reservations = reservationDao.findReservationsForDateRange(currentDate, tomorrowDate);
+        List<ReservationDTO> reservations = reservationDao.findReservationsForDateRange(currentDate, tomorrowDate)
+                .stream().map(reservationMapper::fromReservation).toList();
 
-        Map<Long, List<Reservation>> reservationsByRoom = reservations.stream()
-                .collect(Collectors.groupingBy(reservation -> reservation.getRoom().getRoomId()));
+        Map<Long, List<ReservationDTO>> thisDaysReservationsByRoomMap =
+                reservations.stream().collect(Collectors.groupingBy(reservation -> reservation.getRoom().getRoomId()));
 
         List<Room> rooms = roomService.getAllRooms();
 
+        logger.info("[ Scheduled ] Checking reservations and rooms for availability updates");
+
         for (Room room : rooms) {
-            List<Reservation> roomReservations = reservationsByRoom.getOrDefault(room.getRoomId(), Collections.emptyList());
+            List<ReservationDTO> roomReservations = thisDaysReservationsByRoomMap.getOrDefault(room.getRoomId(), Collections.emptyList());
             if (!room.getAvailable().equals(roomReservations.isEmpty())) {
+                if (room.getAvailable())
+                    logger.info("[ Scheduled ] Room {} was available yesterday, and now being set to unavailable starting this day, with reservation: {}",
+                            roomMapper.fromRoom(room), roomReservations.getFirst());
+                else
+                    logger.info("[ Scheduled ] Room {} was unavailable, and now being set to available",
+                            roomMapper.fromRoom(room));
                 room.setAvailable(!room.getAvailable());
                 roomService.updateRoom(roomMapper.fromRoom(room));
             }

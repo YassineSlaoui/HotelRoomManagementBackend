@@ -31,16 +31,17 @@ public interface ReservationDao extends JpaRepository<Reservation, Long> {
 
     Optional<Reservation> findReservationByRoomAndCheckInDateBeforeAndCheckOutDateAfter(Room room, Date checkInDate, Date checkOutDate);
 
-    @Query("SELECT COUNT(res) > 0 FROM Reservation res " +
-            "WHERE res.room = :room AND " +
-            "(:checkInDate < res.checkOutDate AND :checkOutDate > res.checkInDate)")
-    boolean isRoomReserved(@Param("room") Room room,
-                           @Param("checkInDate") Date checkInDate,
-                           @Param("checkOutDate") Date checkOutDate);
+    @Query("SELECT r FROM Reservation r " +
+            "WHERE r.room = :room " +
+            "AND r.checkOutDate > :checkInDate " +
+            "AND r.checkInDate < :checkOutDate")
+    List<Reservation> findOverlappingReservationsForRoom(@Param("room") Room room,
+                                                         @Param("checkInDate") Date checkInDate,
+                                                         @Param("checkOutDate") Date checkOutDate);
 
     @Query("SELECT r FROM Reservation r " +
-            "WHERE r.checkInDate < :endDate " +
-            "AND r.checkOutDate > :startDate")
-    List<Reservation> findReservationsForDateRange(@Param("startDate") Date startDate,
-                                                   @Param("endDate") Date endDate);
+            "WHERE r.checkOutDate > :checkInDate " +
+            "AND r.checkInDate < :checkOutDate")
+    List<Reservation> findReservationsForDateRange(@Param("checkInDate") Date checkInDate,
+                                                   @Param("checkOutDate") Date checkOutDate);
 }

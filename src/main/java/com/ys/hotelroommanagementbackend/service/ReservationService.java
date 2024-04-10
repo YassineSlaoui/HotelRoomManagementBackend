@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public interface ReservationService {
 
@@ -36,6 +38,8 @@ public interface ReservationService {
     void addReviewToReservation(Long reservationId, Long reviewId);
 
     boolean isRoomAvailable(Long roomId, Date checkInDate, Date checkOutDate);
+
+    List<ReservationDTO> getOverlappingReservations(Long roomId, Date checkInDate, Date checkOutDate);
 
     @Scheduled(cron = "0 0 0 * * ?")
     void updateRoomsAvailability();

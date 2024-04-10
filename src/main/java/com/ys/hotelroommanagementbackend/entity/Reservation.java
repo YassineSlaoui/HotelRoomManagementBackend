@@ -23,7 +23,7 @@ public class Reservation {
     private Long reservationId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "guest_id", referencedColumnName = "guest_id")
+    @JoinColumn(name = "guest_id", referencedColumnName = "guest_id", nullable = false)
     private Guest guest;
 
     @ManyToOne(fetch = FetchType.LAZY)

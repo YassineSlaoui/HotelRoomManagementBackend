@@ -10,6 +10,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class RoomDTO {
 
     private Long roomId;
