@@ -23,6 +23,4 @@ public class ReservationDTO {
     private Date checkInDate;
 
     private Date checkOutDate;
-
-    private Boolean isActive;
 }
