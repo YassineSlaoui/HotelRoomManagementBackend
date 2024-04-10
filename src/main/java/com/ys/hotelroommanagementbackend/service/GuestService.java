@@ -11,7 +11,7 @@ public interface GuestService {
 
     List<GuestDTO> getAllGuests();
 
-    Page<GuestDTO> getGuestsByName(String name, int page, int size);
+    Page<GuestDTO> getGuestsByKeyword(String name, int page, int size);
 
     Page<GuestDTO> getAllGuests(int page, int size);
 

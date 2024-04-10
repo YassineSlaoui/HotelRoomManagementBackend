@@ -39,8 +39,8 @@ public class GuestServiceImpl implements GuestService {
     }
 
     @Override
-    public Page<GuestDTO> getGuestsByName(String name, int page, int size) {
-        return guestDao.findGuestByName(name, PageRequest.of(page, size)).map(guestMapper::fromGuest);
+    public Page<GuestDTO> getGuestsByKeyword(String keyword, int page, int size) {
+        return guestDao.findGuestByKeyword(keyword, PageRequest.of(page, size)).map(guestMapper::fromGuest);
     }
 
     @Override

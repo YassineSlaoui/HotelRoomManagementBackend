@@ -14,14 +14,17 @@ import java.util.Optional;
 public interface GuestDao extends JpaRepository<Guest, Long> {
 
     @Query("SELECT g FROM Guest AS g " +
-            "WHERE LOWER(g.firstName) LIKE CONCAT('%', LOWER(:name), '%') " +
-            "OR LOWER(g.lastName) LIKE CONCAT('%', LOWER(:name), '%')")
-    Page<Guest> findGuestByName(@Param("name") String name, Pageable pageable);
+            "WHERE LOWER(g.firstName) LIKE CONCAT('%', LOWER(:keyword), '%') " +
+            "OR LOWER(g.lastName) LIKE CONCAT('%', LOWER(:keyword), '%') "+
+            "OR LOWER(g.contactInfo) LIKE CONCAT('%', LOWER(:keyword), '%') "+
+            "OR LOWER(g.user.email) LIKE CONCAT('%', LOWER(:keyword), '%') "+
+            "OR LOWER(g.user.username) LIKE CONCAT('%', LOWER(:keyword), '%')")
+    Page<Guest> findGuestByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT g FROM Guest AS g " +
             "WHERE LOWER(g.firstName) LIKE CONCAT('%', LOWER(:name), '%') " +
             "OR LOWER(g.lastName) LIKE CONCAT('%', LOWER(:name), '%')")
-    List<Guest> findGuestByName(@Param("name") String name);
+    List<Guest> findGuestByKeyword(@Param("name") String name);
 
     @Query("SELECT g FROM Guest AS g " +
             "WHERE g.user.email = :email")
