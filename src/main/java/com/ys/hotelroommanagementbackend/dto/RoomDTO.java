@@ -27,6 +27,8 @@ public class RoomDTO {
 
     private Boolean available;
 
+    private Boolean maintenance;
+
     @Builder.Default
     private List<String> photoURLs = new ArrayList<>();
 }

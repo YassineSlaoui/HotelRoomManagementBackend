@@ -43,12 +43,16 @@ public class Room {
     @Column(name = "available", nullable = false)
     private Boolean available;
 
+    @Basic
+    @Column(name = "maintenance", nullable = false)
+    private Boolean maintenance;
+
     @Builder.Default
     @ElementCollection
     private List<String> photoURLs = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "room",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
     private Set<Reservation> reservations = new HashSet<>();
 
     @Override
@@ -61,6 +65,7 @@ public class Room {
                 ", price=" + price +
                 ", capacity=" + capacity +
                 ", available=" + available +
+                ", maintenance=" + maintenance +
                 ", photoURLs=" + photoURLs +
                 '}';
     }

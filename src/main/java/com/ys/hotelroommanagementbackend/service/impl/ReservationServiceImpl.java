@@ -111,8 +111,11 @@ public class ReservationServiceImpl implements ReservationService {
 
         Room roomToBook = roomService.getRoomById(reservationDTO.getRoom().getRoomId());
         List<ReservationDTO> overlappingReservations = getOverlappingReservations(roomToBook.getRoomId(), reservationToBeSaved.getCheckInDate(), reservationToBeSaved.getCheckOutDate());
+
         if (!overlappingReservations.isEmpty())
             throw new RuntimeException("Room is not available, overlapping with reservations: " + overlappingReservations);
+        if (roomToBook.getMaintenance())
+            throw new RuntimeException("Room is under maintenance, cannot book it at the moment.");
 
         reservationToBeSaved.setRoom(roomToBook);
 
@@ -183,16 +186,21 @@ public class ReservationServiceImpl implements ReservationService {
         logger.info("[ Scheduled ] Checking reservations and rooms for availability updates");
 
         for (Room room : rooms) {
-            List<ReservationDTO> roomReservations = thisDaysReservationsByRoomMap.getOrDefault(room.getRoomId(), Collections.emptyList());
-            if (!room.getAvailable().equals(roomReservations.isEmpty())) {
-                if (room.getAvailable())
-                    logger.info("[ Scheduled ] Room {} was available yesterday, and now being set to unavailable starting this day, with reservation: {}",
-                            roomMapper.fromRoom(room), roomReservations.getFirst());
-                else
-                    logger.info("[ Scheduled ] Room {} was unavailable, and now being set to available",
-                            roomMapper.fromRoom(room));
-                room.setAvailable(!room.getAvailable());
-                roomService.updateRoom(roomMapper.fromRoom(room));
+            if (room.getMaintenance()) {
+                logger.info("[ Scheduled ] Room {} is under maintenance, it's not available.", room);
+                room.setAvailable(false);
+            } else {
+                List<ReservationDTO> roomReservations = thisDaysReservationsByRoomMap.getOrDefault(room.getRoomId(), Collections.emptyList());
+                if (!room.getAvailable().equals(roomReservations.isEmpty())) {
+                    if (room.getAvailable())
+                        logger.info("[ Scheduled ] Room {} was available yesterday, and now being set to unavailable starting this day, with reservation: {}",
+                                roomMapper.fromRoom(room), roomReservations.getFirst());
+                    else
+                        logger.info("[ Scheduled ] Room {} was unavailable, and now being set to available",
+                                roomMapper.fromRoom(room));
+                    room.setAvailable(!room.getAvailable());
+                    roomService.updateRoom(roomMapper.fromRoom(room));
+                }
             }
         }
     }

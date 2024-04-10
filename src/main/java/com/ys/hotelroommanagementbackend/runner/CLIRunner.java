@@ -88,6 +88,7 @@ public class CLIRunner implements CommandLineRunner {
                     .capacity(i % 3 == 0 ? 1 : i % 3 == 1 ? 2 : 3)
                     .description("A good room, like all the other rooms!")
                     .available(true)
+                    .maintenance(false)
                     .build();
             roomDTO = roomService.createRoom(roomDTO);
             roomDTOS.add(roomDTO);
