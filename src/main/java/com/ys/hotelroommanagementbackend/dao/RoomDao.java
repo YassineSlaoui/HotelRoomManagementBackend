@@ -37,24 +37,20 @@ public interface RoomDao extends JpaRepository<Room, Long>, JpaSpecificationExec
      * @param maxCapacity This will filter with rooms with capacity lower than this
      * @param available This will filter rooms for availability
      * @param minRating This will filter for rooms with rating that's higher than this
-     * @param availabilityStartDate This will filter for rooms that are available from this date
-     * @param availabilityEndDate This will filter for rooms that are no longer available from this date
      * @return Page of rooms that fit all the non-null criteria
      *
      * @author Yassine Slaoui
      */
-    @Query("SELECT r FROM Room AS r WHERE " +
-            "(:roomNumber IS NULL OR LOWER(r.roomNumber) LIKE CONCAT('%', LOWER(:roomNumber), '%')) AND " +
-            "(:roomType IS NULL OR r.roomType = :roomType) AND " +
-            "(:description IS NULL OR LOWER(r.description) LIKE CONCAT('%', LOWER(:description), '%')) AND " +
-            "(:minPrice IS NULL OR r.price >= :minPrice) AND " +
-            "(:maxPrice IS NULL OR r.price <= :maxPrice) AND " +
-            "(:minCapacity IS NULL OR r.capacity >= :minCapacity) AND " +
-            "(:maxCapacity IS NULL OR r.capacity <= :maxCapacity) AND " +
-            "(:available IS NULL OR r.available = :available) AND " +
-            "(:minRating IS NULL OR NOT EXISTS (SELECT rv FROM Review AS rv WHERE rv.reservation.room = r AND rv.rating < :minRating)) AND " +
-            "(:availabilityStartDate IS NULL OR r.availabilityStartDate >= :availabilityStartDate) AND " +
-            "(:availabilityEndDate IS NULL OR r.availabilityEndDate <= :availabilityEndDate)")
+    @Query("SELECT r FROM Room AS r " +
+            "WHERE (:roomNumber IS NULL OR LOWER(r.roomNumber) LIKE CONCAT('%', LOWER(:roomNumber), '%')) " +
+            "AND (:roomType IS NULL OR r.roomType = :roomType) " +
+            "AND (:description IS NULL OR LOWER(r.description) LIKE CONCAT('%', LOWER(:description), '%')) " +
+            "AND (:minPrice IS NULL OR r.price >= :minPrice) " +
+            "AND (:maxPrice IS NULL OR r.price <= :maxPrice) " +
+            "AND (:minCapacity IS NULL OR r.capacity >= :minCapacity) " +
+            "AND (:maxCapacity IS NULL OR r.capacity <= :maxCapacity) " +
+            "AND (:available IS NULL OR r.available = :available) " +
+            "AND (:minRating IS NULL OR NOT EXISTS (SELECT rv FROM Review AS rv WHERE rv.reservation.room = r AND rv.rating < :minRating))")
     Page<Room> getRoomsByFilters(@Param("roomNumber") String roomNumber,
                                  @Param("roomType") String roomType,
                                  @Param("description") String description,
@@ -64,7 +60,5 @@ public interface RoomDao extends JpaRepository<Room, Long>, JpaSpecificationExec
                                  @Param("maxCapacity") Integer maxCapacity,
                                  @Param("available") Boolean available,
                                  @Param("minRating") Integer minRating,
-                                 @Param("availabilityStartDate") Date availabilityStartDate,
-                                 @Param("availabilityEndDate") Date availabilityEndDate,
                                  Pageable pageable);
 }

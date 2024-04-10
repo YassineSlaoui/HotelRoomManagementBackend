@@ -29,8 +29,4 @@ public class RoomDTO {
 
     @Builder.Default
     private List<String> photoURLs = new ArrayList<>();
-
-    private Date availabilityStartDate;
-
-    private Date availabilityEndDate;
 }

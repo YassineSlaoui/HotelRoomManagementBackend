@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ import java.util.List;
 
 @Service
 @Transactional
+@EnableScheduling
 public class RoomServiceImpl implements RoomService {
 
     private RoomDao roomDao;
@@ -58,8 +61,6 @@ public class RoomServiceImpl implements RoomService {
         Integer maxCapacity = null;
         Boolean available = null;
         Integer minRating = null;
-        Date availabilityStartDate = null;
-        Date availabilityEndDate = null;
 
         for (FilterDTO filter : filters) {
             switch (filter.getFilterName()) {
@@ -90,12 +91,6 @@ public class RoomServiceImpl implements RoomService {
                 case "minRating":
                     minRating = (Integer) filter.getFilterValue();
                     break;
-                case "availabilityStartDate":
-                    availabilityStartDate = (Date) filter.getFilterValue();
-                    break;
-                case "availabilityEndDate":
-                    availabilityEndDate = (Date) filter.getFilterValue();
-                    break;
                 default:
                     logger.warn("[ getRoomsByFilters() ] Invalid filter field: {}", filter.getFilterName());
                     break;
@@ -104,7 +99,7 @@ public class RoomServiceImpl implements RoomService {
 
         return roomDao.getRoomsByFilters(roomNumber, roomType, description,
                         minPrice, maxPrice, minCapacity, maxCapacity, available, minRating,
-                        availabilityStartDate, availabilityEndDate, PageRequest.of(page, size))
+                        PageRequest.of(page, size))
                 .map(room -> roomMapper.fromRoom(room));
     }
 
@@ -121,8 +116,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomDTO> getAllRooms() {
-        return roomDao.findAll().stream().map(room -> roomMapper.fromRoom(room)).toList();
+    public List<Room> getAllRooms() {
+        return roomDao.findAll();
     }
 
     @Override

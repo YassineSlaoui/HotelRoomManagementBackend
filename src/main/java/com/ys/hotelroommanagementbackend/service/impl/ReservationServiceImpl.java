@@ -3,17 +3,25 @@ package com.ys.hotelroommanagementbackend.service.impl;
 import com.ys.hotelroommanagementbackend.dao.ReservationDao;
 import com.ys.hotelroommanagementbackend.dto.ReservationDTO;
 import com.ys.hotelroommanagementbackend.entity.Reservation;
+import com.ys.hotelroommanagementbackend.entity.Room;
 import com.ys.hotelroommanagementbackend.mapper.ReservationMapper;
+import com.ys.hotelroommanagementbackend.mapper.RoomMapper;
 import com.ys.hotelroommanagementbackend.service.GuestService;
 import com.ys.hotelroommanagementbackend.service.ReservationService;
 import com.ys.hotelroommanagementbackend.service.ReviewService;
 import com.ys.hotelroommanagementbackend.service.RoomService;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -24,13 +32,15 @@ public class ReservationServiceImpl implements ReservationService {
     private GuestService guestService;
     private RoomService roomService;
     private ReviewService reviewService;
+    private RoomMapper roomMapper;
 
-    public ReservationServiceImpl(ReservationDao reservationDao, ReservationMapper reservationMapper, GuestService guestService, RoomService roomService, ReviewService reviewService) {
+    public ReservationServiceImpl(ReservationDao reservationDao, ReservationMapper reservationMapper, GuestService guestService, RoomService roomService, ReviewService reviewService, RoomMapper roomMapper) {
         this.reservationDao = reservationDao;
         this.reservationMapper = reservationMapper;
         this.guestService = guestService;
         this.roomService = roomService;
         this.reviewService = reviewService;
+        this.roomMapper = roomMapper;
     }
 
     @Override
@@ -95,7 +105,8 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationDTO createReservation(ReservationDTO reservationDTO) {
         Reservation reservationToBeSaved = reservationMapper.toReservation(reservationDTO);
         reservationToBeSaved.setGuest(guestService.getGuestById(reservationDTO.getGuest().getGuestId()));
-        reservationToBeSaved.setRoom(roomService.getRoomById(reservationDTO.getRoom().getRoomId()));
+        Room roomToBook = roomService.getRoomById(reservationDTO.getRoom().getRoomId());
+        reservationToBeSaved.setRoom(roomToBook);
         Reservation savedReservation = reservationDao.save(reservationToBeSaved);
         return reservationMapper.fromReservation(savedReservation);
     }
@@ -120,5 +131,32 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = getReservationById(reservationId);
         reservation.setReview(reviewService.getReviewById(reviewId));
         reservationDao.save(reservation);
+    }
+
+    @Override
+    public boolean isRoomAvailable(Long roomId, Date checkInDate, Date checkOutDate) {
+        return reservationDao.isRoomReserved(roomService.getRoomById(roomId), checkInDate, checkOutDate);
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    @Override
+    public void updateRoomsAvailability() {
+        Date currentDate = new Date();
+        Date tomorrowDate = DateUtils.addDays(currentDate, 1);
+
+        List<Reservation> reservations = reservationDao.findReservationsForDateRange(currentDate, tomorrowDate);
+
+        Map<Long, List<Reservation>> reservationsByRoom = reservations.stream()
+                .collect(Collectors.groupingBy(reservation -> reservation.getRoom().getRoomId()));
+
+        List<Room> rooms = roomService.getAllRooms();
+
+        for (Room room : rooms) {
+            List<Reservation> roomReservations = reservationsByRoom.getOrDefault(room.getRoomId(), Collections.emptyList());
+            if (!room.getAvailable().equals(roomReservations.isEmpty())) {
+                room.setAvailable(!room.getAvailable());
+                roomService.updateRoom(roomMapper.fromRoom(room));
+            }
+        }
     }
 }

@@ -51,14 +51,6 @@ public class Room {
     @OneToMany(mappedBy = "room")
     private Set<Reservation> reservations = new HashSet<>();
 
-    @Basic
-    @Column(name = "availability-start", nullable = false)
-    private Date availabilityStartDate;
-
-    @Basic
-    @Column(name = "availability-end", nullable = false)
-    private Date availabilityEndDate;
-
     @Override
     public String toString() {
         return "Room{" +
@@ -70,8 +62,6 @@ public class Room {
                 ", capacity=" + capacity +
                 ", available=" + available +
                 ", photoURLs=" + photoURLs +
-                ", availabilityStartDate=" + availabilityStartDate +
-                ", availabilityEndDate=" + availabilityEndDate +
                 '}';
     }
 
@@ -80,12 +70,12 @@ public class Room {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Room room = (Room) o;
-        return Objects.equals(roomId, room.roomId) && Objects.equals(roomNumber, room.roomNumber) && Objects.equals(roomType, room.roomType) && Objects.equals(description, room.description) && Objects.equals(price, room.price) && Objects.equals(capacity, room.capacity) && Objects.equals(available, room.available) && Objects.equals(photoURLs, room.photoURLs) && Objects.equals(availabilityStartDate, room.availabilityStartDate) && Objects.equals(availabilityEndDate, room.availabilityEndDate);
+        return Objects.equals(roomId, room.roomId) && Objects.equals(roomNumber, room.roomNumber) && Objects.equals(roomType, room.roomType) && Objects.equals(description, room.description) && Objects.equals(price, room.price) && Objects.equals(capacity, room.capacity) && Objects.equals(available, room.available) && Objects.equals(photoURLs, room.photoURLs);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(roomId, roomNumber, roomType, description, price, capacity, available, photoURLs, availabilityStartDate, availabilityEndDate);
+        return Objects.hash(roomId, roomNumber, roomType, description, price, capacity, available, photoURLs);
     }
 
 }
