@@ -40,9 +40,9 @@ public interface RoomDao extends JpaRepository<Room, Long>, JpaSpecificationExec
      * @author Yassine Slaoui
      */
     @Query("SELECT r FROM Room AS r " +
-            "WHERE (:roomNumber IS NULL OR LOWER(r.roomNumber) LIKE CONCAT('%', LOWER(:roomNumber), '%')) " +
+            "WHERE (:roomNumber IS NULL OR r.roomNumber ILIKE %:roomNumber%) " +
             "AND (:roomType IS NULL OR r.roomType = :roomType) " +
-            "AND (:description IS NULL OR LOWER(r.description) LIKE CONCAT('%', LOWER(:description), '%')) " +
+            "AND (:description IS NULL OR r.description ILIKE %:description%) " +
             "AND (:minPrice IS NULL OR r.price >= :minPrice) " +
             "AND (:maxPrice IS NULL OR r.price <= :maxPrice) " +
             "AND (:minCapacity IS NULL OR r.capacity >= :minCapacity) " +
