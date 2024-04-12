@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +22,6 @@ import java.util.List;
 
 @Service
 @Transactional
-@EnableScheduling
 public class RoomServiceImpl implements RoomService {
 
     private final ReservationMapper reservationMapper;
@@ -118,8 +116,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<Room> getAllRooms() {
-        return roomDao.findAll();
+    public List<RoomDTO> getAllRooms() {
+        return roomDao.findAll().stream().map(roomMapper::fromRoom).toList();
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.ys.hotelroommanagementbackend.service.impl;
 
 import com.ys.hotelroommanagementbackend.dao.ReservationDao;
 import com.ys.hotelroommanagementbackend.dto.ReservationDTO;
+import com.ys.hotelroommanagementbackend.dto.RoomDTO;
 import com.ys.hotelroommanagementbackend.entity.Reservation;
 import com.ys.hotelroommanagementbackend.entity.Room;
 import com.ys.hotelroommanagementbackend.mapper.ReservationMapper;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@EnableScheduling
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationDao reservationDao;
@@ -181,11 +184,11 @@ public class ReservationServiceImpl implements ReservationService {
         Map<Long, List<ReservationDTO>> thisDaysReservationsByRoomMap =
                 reservations.stream().collect(Collectors.groupingBy(reservation -> reservation.getRoom().getRoomId()));
 
-        List<Room> rooms = roomService.getAllRooms();
+        List<RoomDTO> rooms = roomService.getAllRooms();
 
         logger.info("[ Scheduled ] Checking reservations and rooms for availability updates");
 
-        for (Room room : rooms) {
+        for (RoomDTO room : rooms) {
             if (room.getMaintenance()) {
                 logger.info("[ Scheduled ] Room {} is under maintenance, it's not available.", room);
                 room.setAvailable(false);
@@ -194,12 +197,12 @@ public class ReservationServiceImpl implements ReservationService {
                 if (!room.getAvailable().equals(roomReservations.isEmpty())) {
                     if (room.getAvailable())
                         logger.info("[ Scheduled ] Room {} was available yesterday, and now being set to unavailable starting this day, with reservation: {}",
-                                roomMapper.fromRoom(room), roomReservations.getFirst());
+                                room, roomReservations.getFirst());
                     else
                         logger.info("[ Scheduled ] Room {} was unavailable, and now being set to available",
-                                roomMapper.fromRoom(room));
+                                room);
                     room.setAvailable(!room.getAvailable());
-                    roomService.updateRoom(roomMapper.fromRoom(room));
+                    roomService.updateRoom(room);
                 }
             }
         }

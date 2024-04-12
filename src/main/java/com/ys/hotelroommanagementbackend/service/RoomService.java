@@ -20,7 +20,7 @@ public interface RoomService {
 
     Page<RoomDTO> getPreviouslyBookedRoomsForGuest(Long guestId, int page, int size);
 
-    List<Room> getAllRooms();
+    List<RoomDTO> getAllRooms();
 
     RoomDTO createRoom(RoomDTO roomDTO);
 
