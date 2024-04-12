@@ -2,6 +2,9 @@ package com.ys.hotelroommanagementbackend.dto;
 
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,4 +21,7 @@ public class UserDTO {
 
     @ToString.Exclude
     private String password;
+
+    @Builder.Default
+    private Set<String> roles = new HashSet<>();
 }

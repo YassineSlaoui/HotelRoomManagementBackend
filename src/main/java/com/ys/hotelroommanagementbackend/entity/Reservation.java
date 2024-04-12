@@ -44,16 +44,6 @@ public class Reservation {
         review.setReservation(this);
     }
 
-    public void setGuest(Guest guest) {
-        this.guest = guest;
-        guest.getReservations().add(this);
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-        room.getReservations().add(this);
-    }
-
     @Override
     public String toString() {
         return "Reservation{" +

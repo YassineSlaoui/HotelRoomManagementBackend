@@ -48,7 +48,7 @@ public class Room {
     private Boolean maintenance;
 
     @Builder.Default
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> photoURLs = new ArrayList<>();
 
     @Builder.Default

@@ -50,6 +50,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User user) {
+        User loadedUser = userDao.findById(user.getUserId()).orElseThrow(() -> new RuntimeException("User with id: " + user.getUserId() + " Not Found"));
+        loadedUser.getRoles().forEach(role -> user.getRoles().add(role));
         return userDao.save(user);
     }
 

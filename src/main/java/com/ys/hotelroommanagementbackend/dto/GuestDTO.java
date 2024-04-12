@@ -2,6 +2,9 @@ package com.ys.hotelroommanagementbackend.dto;
 
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -10,7 +13,7 @@ import lombok.*;
 @ToString
 public class GuestDTO {
 
-    private long guestId;
+    private Long guestId;
 
     private String firstName;
 

@@ -19,7 +19,7 @@ public class Guest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "guest_id")
-    private long guestId;
+    private Long guestId;
 
     @Basic
     @Column(name = "first_name", nullable = false)
@@ -56,7 +56,7 @@ public class Guest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Guest guest = (Guest) o;
-        return guestId == guest.guestId && Objects.equals(firstName, guest.firstName) && Objects.equals(lastName, guest.lastName) && Objects.equals(contactInfo, guest.contactInfo);
+        return Objects.equals(guestId, guest.guestId) && Objects.equals(firstName, guest.firstName) && Objects.equals(lastName, guest.lastName) && Objects.equals(contactInfo, guest.contactInfo);
     }
 
     @Override
