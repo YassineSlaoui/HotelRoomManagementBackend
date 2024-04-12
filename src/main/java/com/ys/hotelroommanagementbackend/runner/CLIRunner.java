@@ -4,6 +4,7 @@ import com.ys.hotelroommanagementbackend.dto.GuestDTO;
 import com.ys.hotelroommanagementbackend.dto.ReservationDTO;
 import com.ys.hotelroommanagementbackend.dto.RoomDTO;
 import com.ys.hotelroommanagementbackend.dto.UserDTO;
+import com.ys.hotelroommanagementbackend.mapper.GuestMapper;
 import com.ys.hotelroommanagementbackend.service.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.boot.CommandLineRunner;
@@ -24,17 +25,19 @@ public class CLIRunner implements CommandLineRunner {
     final RoomService roomService;
     final ReservationService reservationService;
     final ReviewService reviewService;
-    final List<GuestDTO> guestDTOS = new ArrayList<>();
-    final List<RoomDTO> roomDTOS = new ArrayList<>();
+    List<GuestDTO> guestDTOS = new ArrayList<>();
+    List<RoomDTO> roomDTOS = new ArrayList<>();
     final List<ReservationDTO> reservationDTOS = new ArrayList<>();
+    private final GuestMapper guestMapper;
 
-    public CLIRunner(RoleService roleService, UserService userService, GuestService guestService, RoomService roomService, ReservationService reservationService, ReviewService reviewService) {
+    public CLIRunner(RoleService roleService, UserService userService, GuestService guestService, RoomService roomService, ReservationService reservationService, ReviewService reviewService, GuestMapper guestMapper) {
         this.roleService = roleService;
         this.userService = userService;
         this.guestService = guestService;
         this.roomService = roomService;
         this.reservationService = reservationService;
         this.reviewService = reviewService;
+        this.guestMapper = guestMapper;
     }
 
     @Override
@@ -47,6 +50,13 @@ public class CLIRunner implements CommandLineRunner {
         updateGuests();
         updateRooms();
         updateReservations();
+
+        roomDTOS = roomService.getAllRooms();
+        System.out.println(roomDTOS.stream().filter(roomDTO -> roomDTO.getRoomId().equals(5L)).toList().getFirst());
+
+        guestDTOS = guestService.getAllGuests();
+        System.out.println(guestDTOS.stream().filter(guestDTO -> guestDTO.getGuestId().equals(5L)).toList().getFirst());
+
 //        removeGuests();
 //        removeRooms();
 //        removeReservations();
@@ -96,19 +106,21 @@ public class CLIRunner implements CommandLineRunner {
     }
 
     private void createReservations() {
-        reservationDTOS.add(reservationService.createReservation(ReservationDTO.builder()
-                .room(roomDTOS.get(1))
-                .guest(guestDTOS.get(2))
-                .checkInDate(DateUtils.addMinutes(new Date(), 1))
-                .checkOutDate(DateUtils.addMinutes(new Date(), 2))
-                .build()));
+        reservationDTOS.add(
+                reservationService.createReservation(ReservationDTO.builder()
+                        .room(roomDTOS.get(1))
+                        .guest(guestDTOS.get(2))
+                        .checkInDate(DateUtils.addMinutes(new Date(), 1))
+                        .checkOutDate(DateUtils.addMinutes(new Date(), 2))
+                        .build()));
 
-        reservationDTOS.add(reservationService.createReservation(ReservationDTO.builder()
-                .room(roomDTOS.get(2))
-                .guest(guestDTOS.get(4))
-                .checkInDate(DateUtils.addMinutes(new Date(), 1))
-                .checkOutDate(DateUtils.addMinutes(new Date(), 3))
-                .build()));
+        reservationDTOS.add(
+                reservationService.createReservation(ReservationDTO.builder()
+                        .room(roomDTOS.get(2))
+                        .guest(guestDTOS.get(4))
+                        .checkInDate(DateUtils.addMinutes(new Date(), 1))
+                        .checkOutDate(DateUtils.addMinutes(new Date(), 3))
+                        .build()));
     }
 
     public void updateGuests() {
