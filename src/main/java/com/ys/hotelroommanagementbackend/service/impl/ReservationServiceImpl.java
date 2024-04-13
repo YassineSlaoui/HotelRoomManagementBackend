@@ -6,7 +6,6 @@ import com.ys.hotelroommanagementbackend.dto.RoomDTO;
 import com.ys.hotelroommanagementbackend.entity.Reservation;
 import com.ys.hotelroommanagementbackend.entity.Room;
 import com.ys.hotelroommanagementbackend.mapper.ReservationMapper;
-import com.ys.hotelroommanagementbackend.mapper.RoomMapper;
 import com.ys.hotelroommanagementbackend.service.GuestService;
 import com.ys.hotelroommanagementbackend.service.ReservationService;
 import com.ys.hotelroommanagementbackend.service.ReviewService;
@@ -37,17 +36,15 @@ public class ReservationServiceImpl implements ReservationService {
     private final GuestService guestService;
     private final RoomService roomService;
     private final ReviewService reviewService;
-    private final RoomMapper roomMapper;
 
     final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    public ReservationServiceImpl(ReservationDao reservationDao, ReservationMapper reservationMapper, GuestService guestService, RoomService roomService, ReviewService reviewService, RoomMapper roomMapper) {
+    public ReservationServiceImpl(ReservationDao reservationDao, ReservationMapper reservationMapper, GuestService guestService, RoomService roomService, ReviewService reviewService) {
         this.reservationDao = reservationDao;
         this.reservationMapper = reservationMapper;
         this.guestService = guestService;
         this.roomService = roomService;
         this.reviewService = reviewService;
-        this.roomMapper = roomMapper;
     }
 
     @Override

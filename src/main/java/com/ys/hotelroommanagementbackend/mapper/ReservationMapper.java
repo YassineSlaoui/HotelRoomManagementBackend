@@ -25,10 +25,12 @@ public class ReservationMapper {
         BeanUtils.copyProperties(reservation, reservationDTO);
         reservationDTO.setRoom(roomMapper.fromRoom(reservation.getRoom()));
         reservationDTO.setGuest(guestMapper.fromGuest(reservation.getGuest()));
+
         if (reservation.getReview() != null)
             reservationDTO.setReview(reviewMapper.fromReview(reservation.getReview()));
         else
             reservationDTO.setReview(null);
+
         return reservationDTO;
     }
 

@@ -6,10 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/guests")
+@RequestMapping("/v1/api/guests")
 public class GuestRestController {
 
-    private GuestService guestService;
+    private final GuestService guestService;
 
     public GuestRestController(GuestService guestService) {
         this.guestService = guestService;

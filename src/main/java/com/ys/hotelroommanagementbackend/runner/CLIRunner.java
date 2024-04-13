@@ -4,7 +4,6 @@ import com.ys.hotelroommanagementbackend.dto.GuestDTO;
 import com.ys.hotelroommanagementbackend.dto.ReservationDTO;
 import com.ys.hotelroommanagementbackend.dto.RoomDTO;
 import com.ys.hotelroommanagementbackend.dto.UserDTO;
-import com.ys.hotelroommanagementbackend.mapper.GuestMapper;
 import com.ys.hotelroommanagementbackend.service.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.boot.CommandLineRunner;
@@ -28,16 +27,14 @@ public class CLIRunner implements CommandLineRunner {
     List<GuestDTO> guestDTOS = new ArrayList<>();
     List<RoomDTO> roomDTOS = new ArrayList<>();
     final List<ReservationDTO> reservationDTOS = new ArrayList<>();
-    private final GuestMapper guestMapper;
 
-    public CLIRunner(RoleService roleService, UserService userService, GuestService guestService, RoomService roomService, ReservationService reservationService, ReviewService reviewService, GuestMapper guestMapper) {
+    public CLIRunner(RoleService roleService, UserService userService, GuestService guestService, RoomService roomService, ReservationService reservationService, ReviewService reviewService) {
         this.roleService = roleService;
         this.userService = userService;
         this.guestService = guestService;
         this.roomService = roomService;
         this.reservationService = reservationService;
         this.reviewService = reviewService;
-        this.guestMapper = guestMapper;
     }
 
     @Override

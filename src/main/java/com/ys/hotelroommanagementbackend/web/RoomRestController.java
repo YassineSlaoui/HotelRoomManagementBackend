@@ -31,7 +31,7 @@ public class RoomRestController {
         return roomService.getAllRooms(page, size);
     }
 
-    @PostMapping("/filters")
+    @PostMapping("/filteredBy")
     public Page<RoomDTO> getRoomsByFilters(@RequestBody List<FilterDTO> filters,
                                            @RequestParam(defaultValue = "0") int page,
                                            @RequestParam(defaultValue = "10") int size) {
