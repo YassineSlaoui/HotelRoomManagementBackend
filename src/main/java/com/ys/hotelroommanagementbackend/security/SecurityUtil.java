@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class SecurityUtil {
 
-    GuestService guestService;
-    UserService userService;
+    final GuestService guestService;
+    final UserService userService;
 
     public SecurityUtil(GuestService guestService, UserService userService) {
         this.guestService = guestService;
@@ -33,6 +33,15 @@ public class SecurityUtil {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         User user = userService.getUserById(userId);
+
+        return authentication != null && (authentication.getName().equalsIgnoreCase(user.getEmail()) ||
+                authentication.getName().equalsIgnoreCase(user.getUsername()));
+    }
+
+    public boolean isUserOwner(String usernameEmailOrId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = userService.getUserByUsernameOrEmailOrId(usernameEmailOrId);
 
         return authentication != null && (authentication.getName().equalsIgnoreCase(user.getEmail()) ||
                 authentication.getName().equalsIgnoreCase(user.getUsername()));

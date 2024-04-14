@@ -46,7 +46,7 @@ public class UserRestController {
     @GetMapping("/refresh-token")
     public void generateNewAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String jwtRefreshToken = jwtHelper.extractTokenFromHeaderIfExists(request.getHeader(AUTH_HEADER));
-        if (!invalidatedTokenService.isTokenInvalid(jwtRefreshToken))
+        if (!invalidatedTokenService.isTokenValid(jwtRefreshToken))
             throw new RuntimeException("Refresh token is invalid");
         if (jwtRefreshToken != null) {
             Algorithm algorithm = Algorithm.HMAC256(SECRET);
@@ -71,19 +71,19 @@ public class UserRestController {
     }
 
     @GetMapping("/{username_email_or_id}")
-    @PreAuthorize("hasAuthority('Admin')")
+    @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#username_email_or_id)")
     public UserDTO getUserByAny(@PathVariable String username_email_or_id) {
         return userMapper.fromUser(userService.getUserByUsernameOrEmailOrId(username_email_or_id));
     }
 
     @GetMapping("/byEmail/{email}")
-    @PreAuthorize("hasAuthority('Admin')")
+    @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#email)")
     public UserDTO getUserByEmail(@PathVariable String email) {
         return userMapper.fromUser(userService.getUserByEmail(email));
     }
 
     @GetMapping("/byUsername/{username}")
-    @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#userId)")
+    @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#username)")
     public UserDTO getUserByUsername(@PathVariable String username) {
         return userMapper.fromUser(userService.getUserByUsername(username));
     }

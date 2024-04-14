@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public class JWTHelper {
 
-    Algorithm algorithm = Algorithm.HMAC256(JWTUtil.SECRET);
+    final Algorithm algorithm = Algorithm.HMAC256(JWTUtil.SECRET);
 
     public String generateAccessToken(String usernameOrEmail, List<String> roles) {
         return JWT.create()

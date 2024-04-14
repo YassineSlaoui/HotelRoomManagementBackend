@@ -12,7 +12,7 @@ import java.util.Date;
 @EnableScheduling
 public class InvalidatedTokenServiceImpl implements InvalidatedTokenService {
 
-    InvalidatedTokenDao invalidatedTokenDao;
+    final InvalidatedTokenDao invalidatedTokenDao;
 
     public InvalidatedTokenServiceImpl(InvalidatedTokenDao invalidatedTokenDao) {
         this.invalidatedTokenDao = invalidatedTokenDao;
@@ -28,14 +28,14 @@ public class InvalidatedTokenServiceImpl implements InvalidatedTokenService {
     }
 
     @Override
-    public boolean isTokenInvalid(String token) {
-        return invalidatedTokenDao.findByToken(token).isPresent();
+    public boolean isTokenValid(String token) {
+        return invalidatedTokenDao.findByToken(token).isEmpty();
     }
 
     /**
      * Remove all expired tokens from the database at 1AM every day
      *
-     * @author: Yassine Slaoui
+     * @author Yassine Slaoui
      */
     @Override
     @Scheduled(cron = "0 0 1 * * *")

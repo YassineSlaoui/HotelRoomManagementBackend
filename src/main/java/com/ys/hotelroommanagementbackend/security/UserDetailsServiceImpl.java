@@ -15,7 +15,7 @@ import java.util.Collection;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    UserService userService;
+    final UserService userService;
 
     public UserDetailsServiceImpl(UserService userService) {
         this.userService = userService;

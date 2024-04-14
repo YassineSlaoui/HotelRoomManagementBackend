@@ -19,13 +19,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    private UserDetailsServiceImpl userDetailsService;
+    private final JWTHelper jwtHelper;
 
-    private JWTHelper jwtHelper;
+    private final InvalidatedTokenService invalidatedTokenService;
 
-    public SecurityConfiguration(UserDetailsServiceImpl userDetailsService, JWTHelper jwtHelper) {
-        this.userDetailsService = userDetailsService;
+    public SecurityConfiguration(UserDetailsServiceImpl userDetailsService, JWTHelper jwtHelper, InvalidatedTokenService invalidatedTokenService) {
         this.jwtHelper = jwtHelper;
+        this.invalidatedTokenService = invalidatedTokenService;
     }
 
     @Bean
@@ -38,7 +38,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/v1/api/users/refresh-token").permitAll()
                         .anyRequest().authenticated())
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtHelper))
-                .addFilterBefore(new JWTAuthorizationFilter(jwtHelper), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JWTAuthorizationFilter(jwtHelper, invalidatedTokenService), UsernamePasswordAuthenticationFilter.class)
 //                .formLogin(Customizer.withDefaults())
                 .build();
     }

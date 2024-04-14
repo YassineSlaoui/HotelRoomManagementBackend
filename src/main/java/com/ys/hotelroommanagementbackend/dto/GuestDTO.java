@@ -2,9 +2,6 @@ package com.ys.hotelroommanagementbackend.dto;
 
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor

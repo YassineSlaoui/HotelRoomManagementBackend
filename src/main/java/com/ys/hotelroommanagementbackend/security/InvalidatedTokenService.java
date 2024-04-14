@@ -8,7 +8,7 @@ public interface InvalidatedTokenService {
 
     void invalidateToken(String token, Date ExpiresAt);
 
-    boolean isTokenInvalid(String token);
+    boolean isTokenValid(String token);
 
     @Scheduled(cron = "0 0 1 * * *")
     void removeExpiredTokens();

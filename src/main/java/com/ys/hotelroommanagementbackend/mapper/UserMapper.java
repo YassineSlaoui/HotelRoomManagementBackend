@@ -4,7 +4,6 @@ import com.ys.hotelroommanagementbackend.dto.UserDTO;
 import com.ys.hotelroommanagementbackend.entity.Role;
 import com.ys.hotelroommanagementbackend.entity.User;
 import com.ys.hotelroommanagementbackend.service.RoleService;
-import com.ys.hotelroommanagementbackend.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserMapper {
 
-    RoleService roleService;
+    final RoleService roleService;
 
     public UserMapper(RoleService roleService) {
         this.roleService = roleService;
