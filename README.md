@@ -56,11 +56,11 @@ This project is a Hotel Reservation System developed using the Spring Framework.
 
 ## Deliverables
 
-### 1. Report:
+### 1. Report: (Pending)
 - A concise report summarizing the implemented features.
 - Includes screenshots illustrating the user interface and basic functionality of the application.
 
-### 2. GitHub Repository Link:
+### 2. GitHub Repository Link: (Here it is!)
 - A link to the GitHub repository containing the application source code.
 - The repository is well-documented and logically organized to facilitate code understanding.
 
