@@ -81,6 +81,15 @@ public class CLIRunner implements CommandLineRunner {
             userService.assignRoleToUser("Guest" + i + "@hotel-domain.com", "guest");
             guestDTOS.add(savedGuestDTO);
         }
+        guestDTOS.add(guestService.createGuest(GuestDTO.builder()
+                .firstName("Guest11's First Name")
+                .lastName("Guest11's Last Name")
+                .contactInfo("Guest11's Contact Info")
+                .user(UserDTO.builder()
+                        .username("Guest11")
+                        .password("1234")
+                        .build())
+                .build()));
     }
 
     private void createRooms() {
@@ -106,10 +115,11 @@ public class CLIRunner implements CommandLineRunner {
                         .guest(guestDTOS.get(2))
                         .checkInDate(DateUtils.addMinutes(new Date(), 1))
                         .checkOutDate(DateUtils.addMinutes(new Date(), 2))
-                        .review(reviewService.createReview(ReviewDTO.builder()
+                        // This review won't be persisted because the reservation is still new.
+                        .review(ReviewDTO.builder()
                                 .rating(5)
                                 .comment("Great room!")
-                                .build()))
+                                .build())
                         .build()));
 
         reservationDTOS.add(
@@ -118,10 +128,11 @@ public class CLIRunner implements CommandLineRunner {
                         .guest(guestDTOS.get(4))
                         .checkInDate(DateUtils.addMinutes(new Date(), 1))
                         .checkOutDate(DateUtils.addMinutes(new Date(), 3))
-                        .review(reviewService.createReview(ReviewDTO.builder()
+                        // This review won't be persisted because the reservation is still new.
+                        .review(ReviewDTO.builder()
                                 .rating(4)
                                 .comment("Good room!")
-                                .build()))
+                                .build())
                         .build()));
     }
 
@@ -152,12 +163,22 @@ public class CLIRunner implements CommandLineRunner {
         reservationToUpdate.setCheckInDate(DateUtils.addDays(new Date(), 2));
         reservationToUpdate.setCheckOutDate(DateUtils.addDays(new Date(), 5));
         reservationToUpdate.setRoom(roomDTOS.get(4));
+        // Now this review will be persisted because the reservation is being updated.
+        reservationToUpdate.setReview(ReviewDTO.builder()
+                .rating(5)
+                .comment("Great room!")
+                .build());
         reservationService.updateReservation(reservationToUpdate);
 
         reservationToUpdate = reservationDTOS.getFirst();
         reservationToUpdate.setCheckInDate(DateUtils.addDays(new Date(), 5));
         reservationToUpdate.setCheckOutDate(DateUtils.addDays(new Date(), 7));
         reservationToUpdate.setRoom(roomDTOS.get(4));
+        // Now this review will be persisted because the reservation is being updated.
+        reservationToUpdate.setReview(ReviewDTO.builder()
+                .rating(4)
+                .comment("Good room!")
+                .build());
         reservationService.updateReservation(reservationToUpdate);
     }
 

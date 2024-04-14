@@ -6,8 +6,10 @@ import java.sql.Statement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.core.env.Environment;
 
@@ -68,5 +70,14 @@ public class DataSourceConfig {
         }
 
         return dataSource;
+    }
+
+    @Bean
+    public CommandLineRunner initDatabase(DataSource dataSource) {
+        return _ -> {
+            String sql = "ALTER TABLE users ADD CONSTRAINT username_or_email_check CHECK (username IS NOT NULL OR email IS NOT NULL)";
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            jdbcTemplate.execute(sql);
+        };
     }
 }

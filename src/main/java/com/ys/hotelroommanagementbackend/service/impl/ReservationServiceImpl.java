@@ -2,10 +2,12 @@ package com.ys.hotelroommanagementbackend.service.impl;
 
 import com.ys.hotelroommanagementbackend.dao.ReservationDao;
 import com.ys.hotelroommanagementbackend.dto.ReservationDTO;
+import com.ys.hotelroommanagementbackend.dto.ReviewDTO;
 import com.ys.hotelroommanagementbackend.dto.RoomDTO;
 import com.ys.hotelroommanagementbackend.entity.Reservation;
 import com.ys.hotelroommanagementbackend.entity.Room;
 import com.ys.hotelroommanagementbackend.mapper.ReservationMapper;
+import com.ys.hotelroommanagementbackend.mapper.ReviewMapper;
 import com.ys.hotelroommanagementbackend.service.GuestService;
 import com.ys.hotelroommanagementbackend.service.ReservationService;
 import com.ys.hotelroommanagementbackend.service.ReviewService;
@@ -38,13 +40,15 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReviewService reviewService;
 
     final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private final ReviewMapper reviewMapper;
 
-    public ReservationServiceImpl(ReservationDao reservationDao, ReservationMapper reservationMapper, GuestService guestService, RoomService roomService, ReviewService reviewService) {
+    public ReservationServiceImpl(ReservationDao reservationDao, ReservationMapper reservationMapper, GuestService guestService, RoomService roomService, ReviewService reviewService, ReviewMapper reviewMapper) {
         this.reservationDao = reservationDao;
         this.reservationMapper = reservationMapper;
         this.guestService = guestService;
         this.roomService = roomService;
         this.reviewService = reviewService;
+        this.reviewMapper = reviewMapper;
     }
 
     @Override
@@ -105,12 +109,16 @@ public class ReservationServiceImpl implements ReservationService {
                         ", and checkInDate: " + checkInDate + " not found")));
     }
 
-    private ReservationDTO checkAndSaveReservation(ReservationDTO reservationDTO) {
+    private ReservationDTO checkAndSaveReservation(ReservationDTO reservationDTO, Boolean isNewReservation) {
         Reservation reservationToBeSaved = reservationMapper.toReservation(reservationDTO);
         reservationToBeSaved.setGuest(guestService.getGuestById(reservationDTO.getGuest().getGuestId()));
 
         Room roomToBook = roomService.getRoomById(reservationDTO.getRoom().getRoomId());
-        List<ReservationDTO> overlappingReservations = getOverlappingReservations(roomToBook.getRoomId(), reservationToBeSaved.getCheckInDate(), reservationToBeSaved.getCheckOutDate());
+        List<ReservationDTO> overlappingReservations;
+        if (isNewReservation)
+            overlappingReservations = getOverlappingReservations(roomToBook.getRoomId(), reservationToBeSaved.getCheckInDate(), reservationToBeSaved.getCheckOutDate());
+        else
+            overlappingReservations = getOverlappingReservationsExcludingReservation(reservationToBeSaved.getReservationId(), roomToBook.getRoomId(), reservationToBeSaved.getCheckInDate(), reservationToBeSaved.getCheckOutDate());
 
         if (!overlappingReservations.isEmpty())
             throw new RuntimeException("Room is not available, overlapping with reservations: " + overlappingReservations);
@@ -119,8 +127,22 @@ public class ReservationServiceImpl implements ReservationService {
 
         reservationToBeSaved.setRoom(roomToBook);
 
-        if (reservationDTO.getReview() != null)
-            reservationToBeSaved.setReview(reviewService.getReviewById(reservationDTO.getReview().getReviewId()));
+        if (isNewReservation || reservationDTO.getReview() == null)
+            reservationToBeSaved.setReview(null);
+        else if (reservationDTO.getReview().getReviewId() == null) {
+            if (getReservationById(reservationDTO.getReservationId()).getReview() != null)
+                reviewService.deleteReview(getReservationById(reservationDTO.getReservationId()).getReview().getReviewId());
+            reservationToBeSaved.setReview(reviewMapper.toReview(reviewService.createReview(ReviewDTO.builder()
+                    .comment(reservationDTO.getReview().getComment())
+                    .rating(reservationDTO.getReview().getRating())
+                    .build())));
+        } else
+            reservationToBeSaved.setReview(reviewService.getAllReviews().stream()
+                    .filter(review -> review.getReviewId().equals(reservationDTO.getReview().getReviewId()))
+                    .findFirst().orElseGet(() -> reviewMapper.toReview(reviewService.createReview(ReviewDTO.builder()
+                            .comment(reservationDTO.getReview().getComment())
+                            .rating(reservationDTO.getReview().getRating())
+                            .build()))));
 
         Reservation savedReservation = reservationDao.save(reservationToBeSaved);
         return reservationMapper.fromReservation(savedReservation);
@@ -128,13 +150,13 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationDTO createReservation(ReservationDTO reservationDTO) {
-        return checkAndSaveReservation(reservationDTO);
+        return checkAndSaveReservation(reservationDTO, true);
     }
 
 
     @Override
     public ReservationDTO updateReservation(ReservationDTO reservationDTO) {
-        return checkAndSaveReservation(reservationDTO);
+        return checkAndSaveReservation(reservationDTO, false);
     }
 
     @Override
@@ -151,12 +173,17 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public boolean isRoomAvailable(Long roomId, Date checkInDate, Date checkOutDate) {
-        return reservationDao.findOverlappingReservationsForRoom(roomService.getRoomById(roomId), checkInDate, checkOutDate).isEmpty();
+        return reservationDao.findOverlappingReservationsForRoom(null, roomService.getRoomById(roomId), checkInDate, checkOutDate).isEmpty();
     }
 
     @Override
     public List<ReservationDTO> getOverlappingReservations(Long roomId, Date checkInDate, Date checkOutDate) {
-        return reservationDao.findOverlappingReservationsForRoom(roomService.getRoomById(roomId), checkInDate, checkOutDate).stream().map(reservationMapper::fromReservation).toList();
+        return reservationDao.findOverlappingReservationsForRoom(null, roomService.getRoomById(roomId), checkInDate, checkOutDate).stream().map(reservationMapper::fromReservation).toList();
+    }
+
+    @Override
+    public List<ReservationDTO> getOverlappingReservationsExcludingReservation(Long reservationId, Long roomId, Date checkInDate, Date checkOutDate) {
+        return reservationDao.findOverlappingReservationsForRoom(getReservationById(reservationId), roomService.getRoomById(roomId), checkInDate, checkOutDate).stream().map(reservationMapper::fromReservation).toList();
     }
 
     /**

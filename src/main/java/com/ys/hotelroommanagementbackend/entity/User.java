@@ -21,12 +21,20 @@ public class User {
     @Column(name = "user_id")
     private Long userId;
 
+    /**
+     * A special not null constraint is being set the DataSourceConfig class at application startup
+     * <br>
+     * It doesn't allow both the username and email to be null at the same time.
+     * @see com.ys.hotelroommanagementbackend.config.DataSourceConfig
+     *
+     * @auther Yassine Slaoui
+     */
     @Basic
-    @Column(name = "username", nullable = false, unique = true, columnDefinition = "CITEXT")
+    @Column(name = "username", unique = true, columnDefinition = "CITEXT")
     private String username;
 
     @Basic
-    @Column(name = "email", nullable = false, unique = true, columnDefinition = "CITEXT")
+    @Column(name = "email", unique = true, columnDefinition = "CITEXT")
     private String email;
 
     @Basic

@@ -10,7 +10,7 @@ import com.ys.hotelroommanagementbackend.entity.Role;
 import com.ys.hotelroommanagementbackend.entity.User;
 import com.ys.hotelroommanagementbackend.helper.JWTHelper;
 import com.ys.hotelroommanagementbackend.mapper.UserMapper;
-import com.ys.hotelroommanagementbackend.security.InvalidatedTokenService;
+import com.ys.hotelroommanagementbackend.security.TokenValidationService;
 import com.ys.hotelroommanagementbackend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,16 +27,16 @@ import java.util.stream.Collectors;
 import static com.ys.hotelroommanagementbackend.constant.JWTUtil.*;
 
 @RestController
-@RequestMapping("/v1/api/users")
+@RequestMapping("/api/v1/users")
 @CrossOrigin("*")
 public class UserRestController {
 
     private final UserService userService;
     private final UserMapper userMapper;
     private final JWTHelper jwtHelper;
-    private final InvalidatedTokenService invalidatedTokenService;
+    private final TokenValidationService invalidatedTokenService;
 
-    public UserRestController(UserService userService, UserMapper userMapper, JWTHelper jwtHelper, InvalidatedTokenService invalidatedTokenService) {
+    public UserRestController(UserService userService, UserMapper userMapper, JWTHelper jwtHelper, TokenValidationService invalidatedTokenService) {
         this.userService = userService;
         this.userMapper = userMapper;
         this.jwtHelper = jwtHelper;
@@ -54,9 +54,9 @@ public class UserRestController {
             DecodedJWT decodedJWT = jwtVerifier.verify(jwtRefreshToken);
             String usernameOrEmail = decodedJWT.getSubject();
             User user = userService.getUserByUsernameOrEmail(usernameOrEmail);
+            invalidatedTokenService.invalidateUserTokens(user);
             String jwtAccessToken = jwtHelper.generateAccessToken(usernameOrEmail, user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
             String newJwtRefreshToken = jwtHelper.generateRefreshToken(user.getUsername());
-            invalidatedTokenService.invalidateToken(jwtRefreshToken, decodedJWT.getExpiresAt());
             response.setContentType("application/json");
             new ObjectMapper().writeValue(response.getOutputStream(), jwtHelper.getTokensMap(jwtAccessToken, newJwtRefreshToken));
         } else

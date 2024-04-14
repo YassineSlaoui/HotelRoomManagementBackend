@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/api/guests")
+@RequestMapping("/api/v1/guests")
 @CrossOrigin("*")
 public class GuestRestController {
 

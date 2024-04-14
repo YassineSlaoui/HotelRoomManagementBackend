@@ -41,6 +41,8 @@ public interface ReservationService {
 
     List<ReservationDTO> getOverlappingReservations(Long roomId, Date checkInDate, Date checkOutDate);
 
+    List<ReservationDTO> getOverlappingReservationsExcludingReservation(Long reservationId, Long roomId, Date checkInDate, Date checkOutDate);
+
     @Scheduled(cron = "0 0 0 * * ?")
     void updateRoomsAvailability();
 }

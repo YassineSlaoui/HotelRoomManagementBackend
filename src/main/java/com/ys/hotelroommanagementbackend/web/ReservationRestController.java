@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/v1/api/reservations")
+@RequestMapping("/api/v1/reservations")
 @CrossOrigin("*")
 public class ReservationRestController {
 
@@ -84,13 +84,13 @@ public class ReservationRestController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('Admin')")
+    @PreAuthorize("hasAuthority('Admin') or @securityUtil.isGuestOwner(#reservationDTO.guest.guestId)")
     public ReservationDTO createReservation(@RequestBody ReservationDTO reservationDTO) {
         return reservationService.createReservation(reservationDTO);
     }
 
     @PutMapping("/{reservationId}")
-    @PreAuthorize("hasAuthority('Admin')")
+    @PreAuthorize("hasAuthority('Admin') or @securityUtil.isGuestOwner(#reservationDTO.guest.guestId)")
     public ReservationDTO updateReservation(@PathVariable Long reservationId,
                                             @RequestBody ReservationDTO reservationDTO) {
         reservationDTO.setReservationId(reservationId);

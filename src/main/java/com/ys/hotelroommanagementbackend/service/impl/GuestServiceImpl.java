@@ -69,7 +69,7 @@ public class GuestServiceImpl implements GuestService {
     public GuestDTO createGuest(GuestDTO guestDTO) {
         User newGuestUser = userService.createUser(guestDTO.getUser().getUsername(),
                 guestDTO.getUser().getEmail(), guestDTO.getUser().getPassword());
-        userService.assignRoleToUser(newGuestUser.getEmail(), "Guest");
+        userService.assignRoleToUser(newGuestUser.getEmail() != null ? newGuestUser.getEmail() : newGuestUser.getUsername(), "Guest");
         Guest guestToBeSaved = guestMapper.toGuest(guestDTO);
         guestToBeSaved.setUser(newGuestUser);
         Guest savedGuest = guestDao.save(guestToBeSaved);

@@ -10,6 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class ReviewServiceImpl implements ReviewService {
@@ -24,12 +26,18 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review getReviewById(Long reviewId) {
-        return reviewDao.findById(reviewId).orElseThrow(() -> new RuntimeException("Review with id: " + reviewId + " not found"));
+        return reviewDao.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review with id: " + reviewId + " not found"));
     }
 
     @Override
     public Page<ReviewDTO> getAllReviews(int page, int size) {
         return reviewDao.findAll(PageRequest.of(page, size)).map(reviewMapper::fromReview);
+    }
+
+    @Override
+    public List<Review> getAllReviews() {
+        return reviewDao.findAll();
     }
 
     @Override

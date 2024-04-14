@@ -35,10 +35,12 @@ public interface ReservationDao extends JpaRepository<Reservation, Long> {
     List<Reservation> findReservationsByCheckInDateAfterOrCheckOutDateAfter(Date startCheckInDate, Date endCheckInDate);
 
     @Query("SELECT r FROM Reservation r " +
-            "WHERE r.room = :room " +
+            "WHERE (:excludedReservation IS NULL OR r != :excludedReservation) " +
+            "AND r.room = :room " +
             "AND r.checkOutDate > :checkInDate " +
             "AND r.checkInDate < :checkOutDate")
-    List<Reservation> findOverlappingReservationsForRoom(@Param("room") Room room,
+    List<Reservation> findOverlappingReservationsForRoom(@Param("excludedReservation") Reservation excludedReservation,
+                                                         @Param("room") Room room,
                                                          @Param("checkInDate") Date checkInDate,
                                                          @Param("checkOutDate") Date checkOutDate);
 

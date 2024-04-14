@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(String username, String email, String password) {
-        if (!EmailValidator.getInstance().isValid(email))
+        if (email != null && !EmailValidator.getInstance().isValid(email))
             throw new RuntimeException("Email not Valid");
         return userDao.save(User.builder().email(email).password(passwordEncoder.encode(password)).username(username).build());
     }
