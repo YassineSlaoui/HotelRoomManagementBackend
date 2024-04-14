@@ -1,6 +1,7 @@
 package com.ys.hotelroommanagementbackend.security;
 
 
+import com.ys.hotelroommanagementbackend.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,15 +13,23 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "invalidated_tokens")
-public class InvalidatedTokenEntity {
+@Table(name = "tokens")
+public class TokenValidationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tokenId;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private User user;
+
     @Column(unique = true)
     private String token;
+
+    private String tokenType;
+
+    private boolean invalidated;
 
     @Column(name = "invalidated_at")
     private Date invalidatedAt;
