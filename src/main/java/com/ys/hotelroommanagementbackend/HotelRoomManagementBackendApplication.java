@@ -15,6 +15,7 @@ public class HotelRoomManagementBackendApplication {
         SpringApplication.run(HotelRoomManagementBackendApplication.class, args);
     }
 
+
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

@@ -1,6 +1,7 @@
 package com.ys.hotelroommanagementbackend.security;
 
 import com.ys.hotelroommanagementbackend.entity.User;
+import com.ys.hotelroommanagementbackend.service.UserService;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
