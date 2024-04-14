@@ -28,7 +28,8 @@ public class Reservation {
     @JoinColumn(name = "room_id", referencedColumnName = "room_id", nullable = false)
     private Room room;
 
-    @OneToOne(mappedBy = "reservation", cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "review_id", referencedColumnName = "review_id")
     private Review review;
 
     @Basic
@@ -38,11 +39,6 @@ public class Reservation {
     @Basic
     @Column(name = "check_out_date")
     private Date checkOutDate;
-
-    public void setReview(Review review) {
-        this.review = review;
-        review.setReservation(this);
-    }
 
     @Override
     public String toString() {

@@ -27,8 +27,7 @@ public class Review {
     @Column(name = "comment")
     private String comment;
 
-    @OneToOne
-    @JoinColumn(name = "reservation_id", referencedColumnName = "reservation_id", nullable = false)
+    @OneToOne(mappedBy = "review")
     private Reservation reservation;
 
     @Override
