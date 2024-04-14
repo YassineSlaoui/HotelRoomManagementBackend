@@ -27,9 +27,9 @@ public interface UserService {
 
     User updateUser(User user);
 
-    void assignRoleToUser(String email, String roleName);
+    void assignRoleToUser(String keyword, String roleName);
 
-    void revokeRoleFromUser(String email, String roleName);
+    void revokeRoleFromUser(String keyword, String roleName);
 
     void deleteUser(Long userId);
 }

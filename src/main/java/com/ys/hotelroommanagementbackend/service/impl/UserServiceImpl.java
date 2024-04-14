@@ -113,6 +113,11 @@ public class UserServiceImpl implements UserService {
         User loadedUser = userDao.findById(user.getUserId()).orElseThrow(() -> new RuntimeException("User with id: " + user.getUserId() + " Not Found"));
         // Keep roles untouched.
         loadedUser.getRoles().forEach(role -> user.getRoles().add(role));
+        if (user.getPassword() != null && !user.getPassword().equals(loadedUser.getPassword()))
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        else
+            user.setPassword(loadedUser.getPassword());
+
         return userDao.save(user);
     }
 
