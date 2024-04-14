@@ -35,4 +35,10 @@ public interface GuestDao extends JpaRepository<Guest, Long> {
     Optional<Guest> findGuestByUsername(@Param("username") String username);
 
     Optional<Guest> findGuestByGuestId(Long guestId);
+
+    @Query("SELECT g FROM Guest AS g " +
+            "WHERE g IN " +
+                "(SELECT r.guest FROM Reservation AS r " +
+                "WHERE r.review = :reviewId)")
+    Optional<Guest> findGuestByReviewId(Long reviewId);
 }

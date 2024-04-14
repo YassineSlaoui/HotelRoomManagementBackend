@@ -19,6 +19,8 @@ public interface GuestService {
 
     GuestDTO getGuestByUsername(String username);
 
+    GuestDTO getGuestOfReview(Long reviewId);
+
     GuestDTO createGuest(GuestDTO guestDTO);
 
     GuestDTO updateGuest(GuestDTO guestDTO);

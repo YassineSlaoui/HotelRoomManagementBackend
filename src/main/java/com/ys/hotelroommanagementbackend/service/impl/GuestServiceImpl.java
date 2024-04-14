@@ -61,6 +61,11 @@ public class GuestServiceImpl implements GuestService {
     }
 
     @Override
+    public GuestDTO getGuestOfReview(Long reviewId) {
+        return guestMapper.fromGuest(guestDao.findGuestByReviewId(reviewId).orElseThrow(() -> new RuntimeException("Review with id " + reviewId + " has no guest, (impossible)")));
+    }
+
+    @Override
     public GuestDTO createGuest(GuestDTO guestDTO) {
         User newGuestUser = userService.createUser(guestDTO.getUser().getUsername(),
                 guestDTO.getUser().getEmail(), guestDTO.getUser().getPassword());
