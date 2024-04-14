@@ -27,7 +27,7 @@ public class User {
      * It doesn't allow both the username and email to be null at the same time.
      * @see com.ys.hotelroommanagementbackend.config.DataSourceConfig
      *
-     * @auther Yassine Slaoui
+     * @author Yassine Slaoui
      */
     @Basic
     @Column(name = "username", unique = true, columnDefinition = "CITEXT")
