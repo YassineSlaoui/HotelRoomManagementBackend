@@ -1,9 +1,6 @@
 package com.ys.hotelroommanagementbackend.runner;
 
-import com.ys.hotelroommanagementbackend.dto.GuestDTO;
-import com.ys.hotelroommanagementbackend.dto.ReservationDTO;
-import com.ys.hotelroommanagementbackend.dto.RoomDTO;
-import com.ys.hotelroommanagementbackend.dto.UserDTO;
+import com.ys.hotelroommanagementbackend.dto.*;
 import com.ys.hotelroommanagementbackend.service.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.boot.CommandLineRunner;
@@ -109,6 +106,10 @@ public class CLIRunner implements CommandLineRunner {
                         .guest(guestDTOS.get(2))
                         .checkInDate(DateUtils.addMinutes(new Date(), 1))
                         .checkOutDate(DateUtils.addMinutes(new Date(), 2))
+                        .review(reviewService.createReview(ReviewDTO.builder()
+                                .rating(5)
+                                .comment("Great room!")
+                                .build()))
                         .build()));
 
         reservationDTOS.add(
@@ -117,6 +118,10 @@ public class CLIRunner implements CommandLineRunner {
                         .guest(guestDTOS.get(4))
                         .checkInDate(DateUtils.addMinutes(new Date(), 1))
                         .checkOutDate(DateUtils.addMinutes(new Date(), 3))
+                        .review(reviewService.createReview(ReviewDTO.builder()
+                                .rating(4)
+                                .comment("Good room!")
+                                .build()))
                         .build()));
     }
 
