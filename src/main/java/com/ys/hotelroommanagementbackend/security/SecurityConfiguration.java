@@ -1,5 +1,8 @@
 package com.ys.hotelroommanagementbackend.security;
 
+import com.ys.hotelroommanagementbackend.filter.JWTAuthenticationFilter;
+import com.ys.hotelroommanagementbackend.filter.JWTAuthorizationFilter;
+import com.ys.hotelroommanagementbackend.helper.JWTHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -17,8 +21,11 @@ public class SecurityConfiguration {
 
     private UserDetailsServiceImpl userDetailsService;
 
-    public SecurityConfiguration(UserDetailsServiceImpl userDetailsService) {
+    private JWTHelper jwtHelper;
+
+    public SecurityConfiguration(UserDetailsServiceImpl userDetailsService, JWTHelper jwtHelper) {
         this.userDetailsService = userDetailsService;
+        this.jwtHelper = jwtHelper;
     }
 
     @Bean
@@ -27,11 +34,12 @@ public class SecurityConfiguration {
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authz -> {
-                    authz
-                            .anyRequest().authenticated();
-                })
-                .formLogin(Customizer.withDefaults())
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/v1/api/users/refresh-token").permitAll()
+                        .anyRequest().authenticated())
+                .addFilter(new JWTAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtHelper))
+                .addFilterBefore(new JWTAuthorizationFilter(jwtHelper), UsernamePasswordAuthenticationFilter.class)
+//                .formLogin(Customizer.withDefaults())
                 .build();
     }
 

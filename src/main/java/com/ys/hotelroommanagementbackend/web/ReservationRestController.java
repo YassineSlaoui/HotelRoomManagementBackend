@@ -4,12 +4,14 @@ import com.ys.hotelroommanagementbackend.dto.ReservationDTO;
 import com.ys.hotelroommanagementbackend.mapper.ReservationMapper;
 import com.ys.hotelroommanagementbackend.service.ReservationService;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
 @RestController
 @RequestMapping("/v1/api/reservations")
+@CrossOrigin("*")
 public class ReservationRestController {
 
     private final ReservationMapper reservationMapper;
@@ -21,17 +23,20 @@ public class ReservationRestController {
     }
 
     @GetMapping("/{reservationId}")
+    @PreAuthorize("hasAuthority('Admin')")
     public ReservationDTO getReservationById(@PathVariable Long reservationId) {
         return reservationMapper.fromReservation(reservationService.getReservationById(reservationId));
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Admin')")
     public Page<ReservationDTO> getAllReservations(@RequestParam(defaultValue = "0") int page,
                                                    @RequestParam(defaultValue = "10") int size) {
         return reservationService.getAllReservations(page, size);
     }
 
     @GetMapping("/guest/{guestId}")
+    @PreAuthorize("hasAuthority('Admin') or @securityUtil.isGuestOwner(#guestId)")
     public Page<ReservationDTO> getReservationsByGuest(@PathVariable Long guestId,
                                                        @RequestParam(defaultValue = "0") int page,
                                                        @RequestParam(defaultValue = "10") int size) {
@@ -39,6 +44,7 @@ public class ReservationRestController {
     }
 
     @GetMapping("/room/{roomId}")
+    @PreAuthorize("hasAuthority('Admin')")
     public Page<ReservationDTO> getReservationsByRoom(@PathVariable Long roomId,
                                                       @RequestParam(defaultValue = "0") int page,
                                                       @RequestParam(defaultValue = "10") int size) {
@@ -46,6 +52,7 @@ public class ReservationRestController {
     }
 
     @GetMapping("/endOn/{endDate}")
+    @PreAuthorize("hasAuthority('Admin')")
     public Page<ReservationDTO> getReservationsEndingOn(@PathVariable Date endDate,
                                                         @RequestParam(defaultValue = "0") int page,
                                                         @RequestParam(defaultValue = "10") int size) {
@@ -53,6 +60,7 @@ public class ReservationRestController {
     }
 
     @GetMapping("/startOn/{startDate}")
+    @PreAuthorize("hasAuthority('Admin')")
     public Page<ReservationDTO> getReservationsStartingOn(@PathVariable Date startDate,
                                                           @RequestParam(defaultValue = "0") int page,
                                                           @RequestParam(defaultValue = "10") int size) {
@@ -60,6 +68,7 @@ public class ReservationRestController {
     }
 
     @GetMapping("/startFrom/{startDate}")
+    @PreAuthorize("hasAuthority('Admin')")
     public Page<ReservationDTO> getReservationsStartingFrom(@PathVariable Date startDate,
                                                             @RequestParam(defaultValue = "0") int page,
                                                             @RequestParam(defaultValue = "10") int size) {
@@ -67,6 +76,7 @@ public class ReservationRestController {
     }
 
     @GetMapping("/guestRoom/{guestId}/{roomId}/{checkInDate}")
+    @PreAuthorize("hasAuthority('Admin') or @securityUtil.isGuestOwner(#guestId)")
     public ReservationDTO getReservationByGuestAndRoomAndCheckInDate(@PathVariable Long guestId,
                                                                      @PathVariable Long roomId,
                                                                      @PathVariable Date checkInDate) {
@@ -74,11 +84,13 @@ public class ReservationRestController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Admin')")
     public ReservationDTO createReservation(@RequestBody ReservationDTO reservationDTO) {
         return reservationService.createReservation(reservationDTO);
     }
 
     @PutMapping("/{reservationId}")
+    @PreAuthorize("hasAuthority('Admin')")
     public ReservationDTO updateReservation(@PathVariable Long reservationId,
                                             @RequestBody ReservationDTO reservationDTO) {
         reservationDTO.setReservationId(reservationId);
@@ -86,6 +98,7 @@ public class ReservationRestController {
     }
 
     @DeleteMapping("/{reservationId}")
+    @PreAuthorize("hasAuthority('Admin')")
     public void deleteReservation(@PathVariable Long reservationId) {
         reservationService.deleteReservation(reservationId);
     }
