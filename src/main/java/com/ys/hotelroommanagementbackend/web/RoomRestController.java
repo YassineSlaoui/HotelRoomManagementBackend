@@ -4,6 +4,7 @@ import com.ys.hotelroommanagementbackend.dto.FilterDTO;
 import com.ys.hotelroommanagementbackend.dto.RoomDTO;
 import com.ys.hotelroommanagementbackend.mapper.RoomMapper;
 import com.ys.hotelroommanagementbackend.service.RoomService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/rooms")
 @CrossOrigin("*")
+@SecurityRequirement(name = "Authorization")
 public class RoomRestController {
     private final RoomService roomService;
     private final RoomMapper roomMapper;

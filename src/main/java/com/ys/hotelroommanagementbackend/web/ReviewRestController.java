@@ -3,6 +3,7 @@ package com.ys.hotelroommanagementbackend.web;
 import com.ys.hotelroommanagementbackend.dto.ReviewDTO;
 import com.ys.hotelroommanagementbackend.mapper.ReviewMapper;
 import com.ys.hotelroommanagementbackend.service.ReviewService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/reviews")
 @CrossOrigin("*")
+@SecurityRequirement(name = "Authorization")
 public class ReviewRestController {
 
     private final ReviewService reviewService;

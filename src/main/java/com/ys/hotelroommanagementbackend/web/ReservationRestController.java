@@ -3,6 +3,7 @@ package com.ys.hotelroommanagementbackend.web;
 import com.ys.hotelroommanagementbackend.dto.ReservationDTO;
 import com.ys.hotelroommanagementbackend.mapper.ReservationMapper;
 import com.ys.hotelroommanagementbackend.service.ReservationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.Date;
 @RestController
 @RequestMapping("/api/v1/reservations")
 @CrossOrigin("*")
+@SecurityRequirement(name = "Authorization")
 public class ReservationRestController {
 
     private final ReservationMapper reservationMapper;

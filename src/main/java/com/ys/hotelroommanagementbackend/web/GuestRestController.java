@@ -2,6 +2,7 @@ package com.ys.hotelroommanagementbackend.web;
 
 import com.ys.hotelroommanagementbackend.dto.GuestDTO;
 import com.ys.hotelroommanagementbackend.service.GuestService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/guests")
 @CrossOrigin("*")
+@SecurityRequirement(name = "Authorization")
 public class GuestRestController {
 
     private final GuestService guestService;

@@ -12,6 +12,7 @@ import com.ys.hotelroommanagementbackend.helper.JWTHelper;
 import com.ys.hotelroommanagementbackend.mapper.UserMapper;
 import com.ys.hotelroommanagementbackend.security.TokenValidationService;
 import com.ys.hotelroommanagementbackend.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,7 @@ import static com.ys.hotelroommanagementbackend.constant.JWTUtil.*;
 @RestController
 @RequestMapping("/api/v1/users")
 @CrossOrigin("*")
+@SecurityRequirement(name = "Authorization")
 public class UserRestController {
 
     private final UserService userService;
