@@ -42,7 +42,8 @@ public class SecurityConfiguration {
                                 "/v3/**",
                                 "/api-docs/**",
                                 "/swagger-resources/**",
-                                "/swagger-ui/**").permitAll()
+                                "/swagger-ui/**",
+                                "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtHelper))
                 .addFilterBefore(new JWTAuthorizationFilter(jwtHelper, invalidatedTokenService), UsernamePasswordAuthenticationFilter.class)

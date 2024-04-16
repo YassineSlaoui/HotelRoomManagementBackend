@@ -2,6 +2,9 @@ package com.ys.hotelroommanagementbackend.web;
 
 import com.ys.hotelroommanagementbackend.dto.GuestDTO;
 import com.ys.hotelroommanagementbackend.service.GuestService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/guests")
 @CrossOrigin("*")
-@SecurityRequirement(name = "Authorization")
+@SecurityRequirement(name = "Access Token Authorization")
 public class GuestRestController {
 
     private final GuestService guestService;
@@ -24,6 +27,12 @@ public class GuestRestController {
         this.guestService = guestService;
     }
 
+    @Operation(summary = "Search guests")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Guests found"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @GetMapping
     @PreAuthorize("hasAuthority('Admin')")
     public Page<GuestDTO> searchGuests(@RequestParam(name = "keyword", defaultValue = "") String keyword,
@@ -32,12 +41,24 @@ public class GuestRestController {
         return guestService.getGuestsByKeyword(keyword, page, size);
     }
 
+    @Operation(summary = "Create a guest")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Guest created"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PostMapping
     @PreAuthorize("permitAll()")
     public GuestDTO createGuest(@RequestBody GuestDTO guestDTO) {
         return guestService.createGuest(guestDTO);
     }
 
+    @Operation(summary = "Update a guest")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Guest updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PutMapping("/{guestId}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isGuestOwner(#guestId)")
     public GuestDTO updateGuest(@RequestBody GuestDTO guestDTO, @PathVariable long guestId) {
@@ -45,6 +66,12 @@ public class GuestRestController {
         return guestService.updateGuest(guestDTO);
     }
 
+    @Operation(summary = "Delete a guest")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Guest deleted"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @DeleteMapping("/{guestId}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isGuestOwner(#guestId)")
     public void deleteGuest(@PathVariable Long guestId, HttpServletRequest request, HttpServletResponse response) {
