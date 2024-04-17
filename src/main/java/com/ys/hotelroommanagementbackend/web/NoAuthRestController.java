@@ -9,11 +9,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/noauth")
@@ -51,8 +49,8 @@ public class NoAuthRestController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @GetMapping("/refresh-token")
-    public void redirectToUserRestController(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        userRestController.generateNewAccessToken(request, response);
+    public JWTTokensDTO redirectToUserRestController(HttpServletRequest request) throws IOException {
+        return authService.handleRefreshToken(request);
     }
 
     @Operation(summary = "Authenticate a user")

@@ -1,16 +1,11 @@
 package com.ys.hotelroommanagementbackend.web;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ys.hotelroommanagementbackend.dto.JWTTokensDTO;
 import com.ys.hotelroommanagementbackend.dto.UserDTO;
-import com.ys.hotelroommanagementbackend.entity.Role;
-import com.ys.hotelroommanagementbackend.entity.User;
 import com.ys.hotelroommanagementbackend.helper.JWTHelper;
 import com.ys.hotelroommanagementbackend.mapper.UserMapper;
 import com.ys.hotelroommanagementbackend.security.TokenValidationService;
+import com.ys.hotelroommanagementbackend.service.AuthService;
 import com.ys.hotelroommanagementbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,9 +21,6 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
-
-import static com.ys.hotelroommanagementbackend.constant.JWTUtil.*;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -39,12 +31,14 @@ public class UserRestController {
     private final UserMapper userMapper;
     private final JWTHelper jwtHelper;
     private final TokenValidationService invalidatedTokenService;
+    private final AuthService authService;
 
-    public UserRestController(UserService userService, UserMapper userMapper, JWTHelper jwtHelper, TokenValidationService invalidatedTokenService) {
+    public UserRestController(UserService userService, UserMapper userMapper, JWTHelper jwtHelper, TokenValidationService invalidatedTokenService, AuthService authService) {
         this.userService = userService;
         this.userMapper = userMapper;
         this.jwtHelper = jwtHelper;
         this.invalidatedTokenService = invalidatedTokenService;
+        this.authService = authService;
     }
 
     @Operation(summary = "Generate new access token")
@@ -55,23 +49,8 @@ public class UserRestController {
     })
     @SecurityRequirement(name = "Refresh Token Authorization")
     @GetMapping("/refresh-token")
-    public void generateNewAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String jwtRefreshToken = jwtHelper.extractTokenFromHeaderIfExists(request.getHeader(AUTH_HEADER));
-        if (!invalidatedTokenService.isTokenValid(jwtRefreshToken))
-            throw new RuntimeException("Refresh token is invalid");
-        if (jwtRefreshToken != null) {
-            Algorithm algorithm = Algorithm.HMAC256(SECRET);
-            JWTVerifier jwtVerifier = JWT.require(algorithm).build();
-            DecodedJWT decodedJWT = jwtVerifier.verify(jwtRefreshToken);
-            String usernameOrEmail = decodedJWT.getSubject();
-            User user = userService.getUserByUsernameOrEmail(usernameOrEmail);
-            invalidatedTokenService.invalidateUserTokens(user);
-            String jwtAccessToken = jwtHelper.generateAccessToken(usernameOrEmail, user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
-            String newJwtRefreshToken = jwtHelper.generateRefreshToken(user.getUsername());
-            response.setContentType("application/json");
-            new ObjectMapper().writeValue(response.getOutputStream(), jwtHelper.getTokensMap(jwtAccessToken, newJwtRefreshToken));
-        } else
-            throw new RuntimeException("Refresh token required");
+    public JWTTokensDTO generateNewAccessToken(HttpServletRequest request) throws IOException {
+        return authService.handleRefreshToken(request);
     }
 
     @Operation(summary = "Get all users")
@@ -227,7 +206,7 @@ public class UserRestController {
         userService.revokeRoleFromUser(usernameOrEmail, roleName);
     }
 
-    @Operation(summary = "Delete a user")
+    @Operation(summary = "Delete a user", description = "If the user is not an admin, the user will be logged out")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User deleted"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
