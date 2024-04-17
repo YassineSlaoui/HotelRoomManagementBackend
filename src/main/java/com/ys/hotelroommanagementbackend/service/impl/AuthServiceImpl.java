@@ -7,8 +7,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ys.hotelroommanagementbackend.dto.JWTTokensDTO;
 import com.ys.hotelroommanagementbackend.entity.Role;
 import com.ys.hotelroommanagementbackend.entity.User;
+import com.ys.hotelroommanagementbackend.exception.InvalidInputException;
 import com.ys.hotelroommanagementbackend.helper.JWTHelper;
-import com.ys.hotelroommanagementbackend.security.TokenValidationService;
+import com.ys.hotelroommanagementbackend.service.TokenValidationService;
 import com.ys.hotelroommanagementbackend.security.UserDetailsServiceImpl;
 import com.ys.hotelroommanagementbackend.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +18,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.stream.Collectors;
 
 import static com.ys.hotelroommanagementbackend.constant.JWTUtil.AUTH_HEADER;
@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
     public JWTTokensDTO handleRefreshToken(HttpServletRequest request) {
         String jwtRefreshToken = jwtHelper.extractTokenFromHeaderIfExists(request.getHeader(AUTH_HEADER));
         if (!invalidatedTokenService.isTokenValid(jwtRefreshToken))
-            throw new RuntimeException("Refresh token is invalid");
+            throw new InvalidInputException("Refresh token is invalid");
         if (jwtRefreshToken != null) {
             Algorithm algorithm = Algorithm.HMAC256(SECRET);
             JWTVerifier jwtVerifier = JWT.require(algorithm).build();
@@ -68,6 +68,6 @@ public class AuthServiceImpl implements AuthService {
             String newJwtRefreshToken = jwtHelper.generateRefreshToken(user.getUsername());
             return JWTTokensDTO.builder().accessToken(jwtAccessToken).refreshToken(newJwtRefreshToken).build();
         } else
-            throw new RuntimeException("Refresh token required");
+            throw new InvalidInputException("Refresh token required");
     }
 }

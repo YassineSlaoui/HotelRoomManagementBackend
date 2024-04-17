@@ -4,6 +4,7 @@ import com.ys.hotelroommanagementbackend.dao.GuestDao;
 import com.ys.hotelroommanagementbackend.dto.GuestDTO;
 import com.ys.hotelroommanagementbackend.entity.Guest;
 import com.ys.hotelroommanagementbackend.entity.User;
+import com.ys.hotelroommanagementbackend.exception.NotFoundException;
 import com.ys.hotelroommanagementbackend.mapper.GuestMapper;
 import com.ys.hotelroommanagementbackend.mapper.UserMapper;
 import com.ys.hotelroommanagementbackend.service.GuestService;
@@ -51,18 +52,18 @@ public class GuestServiceImpl implements GuestService {
     @Override
     public GuestDTO getGuestByEmail(String email) {
         return guestMapper.fromGuest(guestDao.findGuestByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Guest with email " + email + " not found")));
+                .orElseThrow(() -> new NotFoundException("Guest with email " + email + " not found")));
     }
 
     @Override
     public GuestDTO getGuestByUsername(String username) {
         return guestMapper.fromGuest(guestDao.findGuestByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Guest with username " + username + " not found")));
+                .orElseThrow(() -> new NotFoundException("Guest with username " + username + " not found")));
     }
 
     @Override
     public GuestDTO getGuestOfReview(Long reviewId) {
-        return guestMapper.fromGuest(guestDao.findGuestByReviewId(reviewId).orElseThrow(() -> new RuntimeException("Review with id " + reviewId + " has no guest, (impossible)")));
+        return guestMapper.fromGuest(guestDao.findGuestByReviewId(reviewId).orElseThrow(() -> new NotFoundException("Review with id " + reviewId + " has no guest, (impossible)")));
     }
 
     @Override
@@ -90,7 +91,7 @@ public class GuestServiceImpl implements GuestService {
     @Override
     public Guest getGuestById(Long guestId) {
         return guestDao.findGuestByGuestId(guestId)
-                .orElseThrow(() -> new RuntimeException("Guest with id " + guestId + " not found"));
+                .orElseThrow(() -> new NotFoundException("Guest with id " + guestId + " not found"));
     }
 
     @Override

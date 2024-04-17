@@ -3,6 +3,7 @@ package com.ys.hotelroommanagementbackend.service.impl;
 import com.ys.hotelroommanagementbackend.dao.ReviewDao;
 import com.ys.hotelroommanagementbackend.dto.ReviewDTO;
 import com.ys.hotelroommanagementbackend.entity.Review;
+import com.ys.hotelroommanagementbackend.exception.NotFoundException;
 import com.ys.hotelroommanagementbackend.mapper.ReviewMapper;
 import com.ys.hotelroommanagementbackend.service.ReviewService;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Review getReviewById(Long reviewId) {
         return reviewDao.findById(reviewId)
-                .orElseThrow(() -> new RuntimeException("Review with id: " + reviewId + " not found"));
+                .orElseThrow(() -> new NotFoundException("Review with id: " + reviewId + " not found"));
     }
 
     @Override

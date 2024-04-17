@@ -3,6 +3,7 @@ package com.ys.hotelroommanagementbackend.service.impl;
 import com.ys.hotelroommanagementbackend.dao.TokenValidationDao;
 import com.ys.hotelroommanagementbackend.entity.TokenValidationEntity;
 import com.ys.hotelroommanagementbackend.entity.User;
+import com.ys.hotelroommanagementbackend.exception.NotFoundException;
 import com.ys.hotelroommanagementbackend.service.TokenValidationService;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -36,7 +37,7 @@ public class TokenValidationServiceImpl implements TokenValidationService {
     @Override
     public boolean isTokenValid(String token) {
         return !tokenValidationDao.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Token not found"))
+                .orElseThrow(() -> new NotFoundException("Token not found"))
                 .isInvalidated();
     }
 

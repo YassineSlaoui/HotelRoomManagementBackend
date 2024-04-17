@@ -6,6 +6,8 @@ import com.ys.hotelroommanagementbackend.dto.ReviewDTO;
 import com.ys.hotelroommanagementbackend.dto.RoomDTO;
 import com.ys.hotelroommanagementbackend.entity.Reservation;
 import com.ys.hotelroommanagementbackend.entity.Room;
+import com.ys.hotelroommanagementbackend.exception.ImpossibleOperationException;
+import com.ys.hotelroommanagementbackend.exception.NotFoundException;
 import com.ys.hotelroommanagementbackend.mapper.ReservationMapper;
 import com.ys.hotelroommanagementbackend.mapper.ReviewMapper;
 import com.ys.hotelroommanagementbackend.service.GuestService;
@@ -54,7 +56,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Reservation getReservationById(Long reservationId) {
         return reservationDao.findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("Reservation with id " + reservationId + " not found"));
+                .orElseThrow(() -> new NotFoundException("Reservation with id " + reservationId + " not found"));
     }
 
     @Override
@@ -105,7 +107,7 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationMapper.fromReservation(reservationDao
                 .findReservationByGuestAndRoomAndCheckInDate(guestService.getGuestById(guestId),
                         roomService.getRoomById(roomId), checkInDate)
-                .orElseThrow(() -> new RuntimeException("Reservation with guestId: " + guestId + ", roomId: " + roomId +
+                .orElseThrow(() -> new NotFoundException("Reservation with guestId: " + guestId + ", roomId: " + roomId +
                         ", and checkInDate: " + checkInDate + " not found")));
     }
 
@@ -121,9 +123,9 @@ public class ReservationServiceImpl implements ReservationService {
             overlappingReservations = getOverlappingReservationsExcludingReservation(reservationToBeSaved.getReservationId(), roomToBook.getRoomId(), reservationToBeSaved.getCheckInDate(), reservationToBeSaved.getCheckOutDate());
 
         if (!overlappingReservations.isEmpty())
-            throw new RuntimeException("Room is not available, overlapping with reservations: " + overlappingReservations);
+            throw new ImpossibleOperationException("Room is not available, overlapping with reservations: " + overlappingReservations);
         if (roomToBook.getMaintenance())
-            throw new RuntimeException("Room is under maintenance, cannot book it at the moment.");
+            throw new ImpossibleOperationException("Room is under maintenance, cannot book it at the moment.");
 
         reservationToBeSaved.setRoom(roomToBook);
 

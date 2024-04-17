@@ -2,6 +2,7 @@ package com.ys.hotelroommanagementbackend.service.impl;
 
 import com.ys.hotelroommanagementbackend.dao.RoleDao;
 import com.ys.hotelroommanagementbackend.entity.Role;
+import com.ys.hotelroommanagementbackend.exception.NotFoundException;
 import com.ys.hotelroommanagementbackend.service.RoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getRole(String roleName) {
-        return roleDao.findRoleByNameIgnoreCase(roleName).orElseThrow(() -> new RuntimeException("Role " + roleName + " not found"));
+        return roleDao.findRoleByNameIgnoreCase(roleName).orElseThrow(() -> new NotFoundException("Role " + roleName + " not found"));
     }
 }

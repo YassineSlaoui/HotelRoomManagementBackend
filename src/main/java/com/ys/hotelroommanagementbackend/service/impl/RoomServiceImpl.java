@@ -6,6 +6,8 @@ import com.ys.hotelroommanagementbackend.dto.FilterDTO;
 import com.ys.hotelroommanagementbackend.dto.ReservationDTO;
 import com.ys.hotelroommanagementbackend.dto.RoomDTO;
 import com.ys.hotelroommanagementbackend.entity.Room;
+import com.ys.hotelroommanagementbackend.exception.ImpossibleOperationException;
+import com.ys.hotelroommanagementbackend.exception.NotFoundException;
 import com.ys.hotelroommanagementbackend.mapper.ReservationMapper;
 import com.ys.hotelroommanagementbackend.mapper.RoomMapper;
 import com.ys.hotelroommanagementbackend.service.RoomService;
@@ -41,7 +43,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Room getRoomById(Long roomId) {
-        return roomDao.findById(roomId).orElseThrow(() -> new RuntimeException("Room with id " + roomId + " not found"));
+        return roomDao.findById(roomId).orElseThrow(() -> new NotFoundException("Room with id " + roomId + " not found"));
     }
 
     @Override
@@ -142,7 +144,7 @@ public class RoomServiceImpl implements RoomService {
                 .findReservationsByCheckInDateAfterOrCheckOutDateAfter(new Date(), new Date())
                 .stream().map(reservationMapper::fromReservation).toList();
         if (!currentOrFutureReservations.isEmpty())
-            throw new RuntimeException("Trying to delete a room that has ongoing and/or future reservations, reservations: " + currentOrFutureReservations);
+            throw new ImpossibleOperationException("Trying to delete a room that has ongoing and/or future reservations, reservations: " + currentOrFutureReservations);
         roomDao.deleteById(roomId);
     }
 }

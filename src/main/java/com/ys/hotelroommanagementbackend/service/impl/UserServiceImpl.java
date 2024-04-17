@@ -4,6 +4,8 @@ import com.ys.hotelroommanagementbackend.dao.UserDao;
 import com.ys.hotelroommanagementbackend.dto.UserDTO;
 import com.ys.hotelroommanagementbackend.entity.Role;
 import com.ys.hotelroommanagementbackend.entity.User;
+import com.ys.hotelroommanagementbackend.exception.InvalidInputException;
+import com.ys.hotelroommanagementbackend.exception.NotFoundException;
 import com.ys.hotelroommanagementbackend.mapper.UserMapper;
 import com.ys.hotelroommanagementbackend.service.RoleService;
 import com.ys.hotelroommanagementbackend.service.UserService;
@@ -40,19 +42,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long userId) {
-        return userDao.findById(userId).orElseThrow(() -> new RuntimeException("User with id " + userId + " not found"));
+        return userDao.findById(userId).orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
     }
 
     @Override
     public User getUserByEmail(String email) {
         return userDao.findUserByEmailIgnoreCase(email)
-                .orElseThrow(() -> new RuntimeException("User with email " + email + " not found"));
+                .orElseThrow(() -> new NotFoundException("User with email " + email + " not found"));
     }
 
     @Override
     public User getUserByUsername(String username) {
         return userDao.findUserByUsernameIgnoreCase(username)
-                .orElseThrow(() -> new RuntimeException("User with username " + username + " not found"));
+                .orElseThrow(() -> new NotFoundException("User with username " + username + " not found"));
     }
 
     @Override
@@ -79,11 +81,11 @@ public class UserServiceImpl implements UserService {
         else {
             try {
                 user = getUserByUsername(keyword);
-            } catch (RuntimeException e1) {
+            } catch (NotFoundException e1) {
                 try {
                     user = getUserById(probableId);
-                } catch (RuntimeException e2) {
-                    throw new RuntimeException("Could not find User with id or username matching: " + keyword);
+                } catch (NotFoundException e2) {
+                    throw new NotFoundException("Could not find User with id or username matching: " + keyword);
                 }
             }
         }
@@ -93,14 +95,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(String username, String email, String password) {
         if (email != null && !EmailValidator.getInstance().isValid(email))
-            throw new RuntimeException("Email not Valid");
+            throw new InvalidInputException("Email not Valid");
         return userDao.save(User.builder().email(email).password(passwordEncoder.encode(password)).username(username).build());
     }
 
     @Override
     public User createUserWithEmail(String email, String password) {
         if (!EmailValidator.getInstance().isValid(email))
-            throw new RuntimeException("Email not Valid");
+            throw new InvalidInputException("Email not Valid");
         return userDao.save(User.builder().email(email).password(passwordEncoder.encode(password)).build());
     }
 
@@ -111,7 +113,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User user) {
-        User loadedUser = userDao.findById(user.getUserId()).orElseThrow(() -> new RuntimeException("User with id: " + user.getUserId() + " Not Found"));
+        User loadedUser = userDao.findById(user.getUserId()).orElseThrow(() -> new NotFoundException("User with id: " + user.getUserId() + " Not Found"));
         // Keep roles untouched.
         loadedUser.getRoles().forEach(role -> user.getRoles().add(role));
         if (user.getPassword() != null && !user.getPassword().equals(loadedUser.getPassword()))
