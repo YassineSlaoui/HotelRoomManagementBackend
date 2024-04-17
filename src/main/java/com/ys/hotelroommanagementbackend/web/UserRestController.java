@@ -1,10 +1,7 @@
 package com.ys.hotelroommanagementbackend.web;
 
 import com.ys.hotelroommanagementbackend.dto.UserDTO;
-import com.ys.hotelroommanagementbackend.helper.JWTHelper;
 import com.ys.hotelroommanagementbackend.mapper.UserMapper;
-import com.ys.hotelroommanagementbackend.service.TokenValidationService;
-import com.ys.hotelroommanagementbackend.service.AuthService;
 import com.ys.hotelroommanagementbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,16 +24,10 @@ public class UserRestController {
 
     private final UserService userService;
     private final UserMapper userMapper;
-    private final JWTHelper jwtHelper;
-    private final TokenValidationService invalidatedTokenService;
-    private final AuthService authService;
 
-    public UserRestController(UserService userService, UserMapper userMapper, JWTHelper jwtHelper, TokenValidationService invalidatedTokenService, AuthService authService) {
+    public UserRestController(UserService userService, UserMapper userMapper) {
         this.userService = userService;
         this.userMapper = userMapper;
-        this.jwtHelper = jwtHelper;
-        this.invalidatedTokenService = invalidatedTokenService;
-        this.authService = authService;
     }
 
     @Operation(summary = "Get all users")
