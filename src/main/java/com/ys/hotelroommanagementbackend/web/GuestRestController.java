@@ -48,7 +48,7 @@ public class GuestRestController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @PostMapping
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasAuthority('Admin')")
     public GuestDTO createGuest(@RequestBody GuestDTO guestDTO) {
         return guestService.createGuest(guestDTO);
     }

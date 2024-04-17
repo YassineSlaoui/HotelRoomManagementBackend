@@ -1,6 +1,5 @@
 package com.ys.hotelroommanagementbackend.web;
 
-import com.ys.hotelroommanagementbackend.dto.JWTTokensDTO;
 import com.ys.hotelroommanagementbackend.dto.UserDTO;
 import com.ys.hotelroommanagementbackend.helper.JWTHelper;
 import com.ys.hotelroommanagementbackend.mapper.UserMapper;
@@ -20,11 +19,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/api/v1/users")
 @CrossOrigin("*")
+@SecurityRequirement(name = "Access Token Authorization")
 public class UserRestController {
 
     private final UserService userService;
@@ -41,25 +39,12 @@ public class UserRestController {
         this.authService = authService;
     }
 
-    @Operation(summary = "Generate new access token")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "New access token generated"),
-            @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
-    })
-    @SecurityRequirement(name = "Refresh Token Authorization")
-    @GetMapping("/refresh-token")
-    public JWTTokensDTO generateNewAccessToken(HttpServletRequest request) throws IOException {
-        return authService.handleRefreshToken(request);
-    }
-
     @Operation(summary = "Get all users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users found"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @SecurityRequirement(name = "Access Token Authorization")
     @GetMapping
     @PreAuthorize("hasAuthority('Admin')")
     public Page<UserDTO> getAllUsers(@RequestParam(defaultValue = "0") int page,
@@ -73,7 +58,6 @@ public class UserRestController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @SecurityRequirement(name = "Access Token Authorization")
     @GetMapping("/{username_email_or_id}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#username_email_or_id)")
     public UserDTO getUserByAny(@PathVariable String username_email_or_id) {
@@ -86,7 +70,6 @@ public class UserRestController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @SecurityRequirement(name = "Access Token Authorization")
     @GetMapping("/byEmail/{email}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#email)")
     public UserDTO getUserByEmail(@PathVariable String email) {
@@ -99,7 +82,6 @@ public class UserRestController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @SecurityRequirement(name = "Access Token Authorization")
     @GetMapping("/byUsername/{username}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#username)")
     public UserDTO getUserByUsername(@PathVariable String username) {
@@ -112,7 +94,6 @@ public class UserRestController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @SecurityRequirement(name = "Access Token Authorization")
     @GetMapping("/byId/{userId}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#userId)")
     public UserDTO getUserById(@PathVariable long userId) {
@@ -125,7 +106,6 @@ public class UserRestController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @SecurityRequirement(name = "Access Token Authorization")
     @PostMapping
     @PreAuthorize("hasAuthority('Admin')")
     public UserDTO createUser(@RequestBody UserDTO userDTO) {
@@ -142,7 +122,6 @@ public class UserRestController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @SecurityRequirement(name = "Access Token Authorization")
     @PostMapping("/createWithEmail")
     @PreAuthorize("hasAuthority('Admin')")
     public UserDTO createUserWithEmail(@RequestParam String email,
@@ -156,7 +135,6 @@ public class UserRestController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @SecurityRequirement(name = "Access Token Authorization")
     @PostMapping("/createWithUsername")
     @PreAuthorize("hasAuthority('Admin')")
     public UserDTO createUserWithUsername(@RequestParam String username,
@@ -170,7 +148,6 @@ public class UserRestController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @SecurityRequirement(name = "Access Token Authorization")
     @PutMapping("/{userId}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#userId)")
     public UserDTO updateUser(@PathVariable Long userId, @RequestBody UserDTO userDTO) {
@@ -184,7 +161,6 @@ public class UserRestController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @SecurityRequirement(name = "Access Token Authorization")
     @PostMapping("/assignRole")
     @PreAuthorize("hasAuthority('Admin')")
     public void assignRoleToUser(@RequestParam String usernameOrEmail,
@@ -198,7 +174,6 @@ public class UserRestController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @SecurityRequirement(name = "Access Token Authorization")
     @PostMapping("/revokeRole")
     @PreAuthorize("hasAuthority('Admin')")
     public void revokeRoleFromUser(@RequestParam String usernameOrEmail,
@@ -212,7 +187,6 @@ public class UserRestController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @SecurityRequirement(name = "Access Token Authorization")
     @DeleteMapping("/{userId}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#userId)")
     public void deleteUser(@PathVariable Long userId, HttpServletRequest request, HttpServletResponse response) {
