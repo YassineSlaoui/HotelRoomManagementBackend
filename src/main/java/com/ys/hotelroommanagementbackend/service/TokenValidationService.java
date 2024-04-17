@@ -1,4 +1,4 @@
-package com.ys.hotelroommanagementbackend.security;
+package com.ys.hotelroommanagementbackend.service;
 
 import com.ys.hotelroommanagementbackend.entity.User;
 import org.springframework.scheduling.annotation.Scheduled;

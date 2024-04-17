@@ -3,6 +3,7 @@ package com.ys.hotelroommanagementbackend.security;
 import com.ys.hotelroommanagementbackend.filter.JWTAuthenticationFilter;
 import com.ys.hotelroommanagementbackend.filter.JWTAuthorizationFilter;
 import com.ys.hotelroommanagementbackend.helper.JWTHelper;
+import com.ys.hotelroommanagementbackend.service.TokenValidationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,8 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 

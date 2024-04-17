@@ -1,6 +1,7 @@
-package com.ys.hotelroommanagementbackend.security;
+package com.ys.hotelroommanagementbackend.dao;
 
 import com.ys.hotelroommanagementbackend.entity.User;
+import com.ys.hotelroommanagementbackend.entity.TokenValidationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;

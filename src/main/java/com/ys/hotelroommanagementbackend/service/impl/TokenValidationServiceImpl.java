@@ -1,7 +1,9 @@
-package com.ys.hotelroommanagementbackend.security;
+package com.ys.hotelroommanagementbackend.service.impl;
 
+import com.ys.hotelroommanagementbackend.dao.TokenValidationDao;
+import com.ys.hotelroommanagementbackend.entity.TokenValidationEntity;
 import com.ys.hotelroommanagementbackend.entity.User;
-import com.ys.hotelroommanagementbackend.service.UserService;
+import com.ys.hotelroommanagementbackend.service.TokenValidationService;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

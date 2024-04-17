@@ -3,7 +3,7 @@ package com.ys.hotelroommanagementbackend.helper;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.ys.hotelroommanagementbackend.constant.JWTUtil;
-import com.ys.hotelroommanagementbackend.security.TokenValidationService;
+import com.ys.hotelroommanagementbackend.service.TokenValidationService;
 import com.ys.hotelroommanagementbackend.service.UserService;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Component;

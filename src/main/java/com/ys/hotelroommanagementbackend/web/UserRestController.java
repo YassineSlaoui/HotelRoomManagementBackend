@@ -4,7 +4,7 @@ import com.ys.hotelroommanagementbackend.dto.JWTTokensDTO;
 import com.ys.hotelroommanagementbackend.dto.UserDTO;
 import com.ys.hotelroommanagementbackend.helper.JWTHelper;
 import com.ys.hotelroommanagementbackend.mapper.UserMapper;
-import com.ys.hotelroommanagementbackend.security.TokenValidationService;
+import com.ys.hotelroommanagementbackend.service.TokenValidationService;
 import com.ys.hotelroommanagementbackend.service.AuthService;
 import com.ys.hotelroommanagementbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;

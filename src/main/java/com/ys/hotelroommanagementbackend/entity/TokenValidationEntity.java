@@ -1,7 +1,6 @@
-package com.ys.hotelroommanagementbackend.security;
+package com.ys.hotelroommanagementbackend.entity;
 
 
-import com.ys.hotelroommanagementbackend.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -6,7 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ys.hotelroommanagementbackend.constant.JWTUtil;
 import com.ys.hotelroommanagementbackend.helper.JWTHelper;
-import com.ys.hotelroommanagementbackend.security.TokenValidationService;
+import com.ys.hotelroommanagementbackend.service.TokenValidationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
