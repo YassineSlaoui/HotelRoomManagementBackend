@@ -5,6 +5,9 @@ import com.ys.hotelroommanagementbackend.dto.RoomDTO;
 import com.ys.hotelroommanagementbackend.mapper.RoomMapper;
 import com.ys.hotelroommanagementbackend.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.StringToClassMapItem;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -12,7 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/rooms")
@@ -31,7 +36,15 @@ public class RoomRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Room found"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            }))),
+            @ApiResponse(responseCode = "404", description = "Requested resource not found")
     })
     @GetMapping("/{roomId}")
     @PreAuthorize("hasAuthority('Admin')")
@@ -43,7 +56,14 @@ public class RoomRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Rooms found"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            })))
     })
     @GetMapping
     @PreAuthorize("permitAll()")
@@ -56,7 +76,14 @@ public class RoomRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Rooms found"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            })))
     })
     @PostMapping("/filteredBy")
     @PreAuthorize("permitAll()")
@@ -70,7 +97,14 @@ public class RoomRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Rooms found"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            })))
     })
     @GetMapping("/guest/{guestId}/newRoomsSuggestions")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isGuestOwner(#guestId)")
@@ -84,7 +118,14 @@ public class RoomRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Rooms found"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            })))
     })
     @GetMapping("/guest/{guestId}/previouslyBooked")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isGuestOwner(#guestId)")
@@ -98,7 +139,14 @@ public class RoomRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Room created"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            })))
     })
     @PostMapping
     @PreAuthorize("hasAuthority('Admin')")
@@ -110,7 +158,15 @@ public class RoomRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Room updated"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            }))),
+            @ApiResponse(responseCode = "404", description = "Requested resource not found")
     })
     @PutMapping("/{roomId}")
     @PreAuthorize("hasAuthority('Admin')")
@@ -124,7 +180,15 @@ public class RoomRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Room deleted"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            }))),
+            @ApiResponse(responseCode = "404", description = "Requested resource not found")
     })
     @DeleteMapping("/{roomId}")
     @PreAuthorize("hasAuthority('Admin')")

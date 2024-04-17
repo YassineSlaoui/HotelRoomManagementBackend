@@ -1,5 +1,6 @@
 package com.ys.hotelroommanagementbackend.security;
 
+import com.ys.hotelroommanagementbackend.exception.AccessDeniedHandler;
 import com.ys.hotelroommanagementbackend.filter.JWTAuthenticationFilter;
 import com.ys.hotelroommanagementbackend.filter.JWTAuthorizationFilter;
 import com.ys.hotelroommanagementbackend.helper.JWTHelper;
@@ -43,9 +44,11 @@ public class SecurityConfiguration {
                                 "/swagger-resources/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                )
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtHelper))
                 .addFilterBefore(new JWTAuthorizationFilter(jwtHelper, invalidatedTokenService), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(new AccessDeniedHandler()))
                 .build();
     }
 

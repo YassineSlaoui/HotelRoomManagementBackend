@@ -4,6 +4,9 @@ import com.ys.hotelroommanagementbackend.dto.UserDTO;
 import com.ys.hotelroommanagementbackend.mapper.UserMapper;
 import com.ys.hotelroommanagementbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.StringToClassMapItem;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -15,6 +18,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -34,7 +40,14 @@ public class UserRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users found"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            })))
     })
     @GetMapping
     @PreAuthorize("hasAuthority('Admin')")
@@ -47,7 +60,15 @@ public class UserRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            }))),
+            @ApiResponse(responseCode = "404", description = "Requested resource not found")
     })
     @GetMapping("/{username_email_or_id}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#username_email_or_id)")
@@ -59,7 +80,15 @@ public class UserRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            }))),
+            @ApiResponse(responseCode = "404", description = "Requested resource not found")
     })
     @GetMapping("/byEmail/{email}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#email)")
@@ -71,7 +100,15 @@ public class UserRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            }))),
+            @ApiResponse(responseCode = "404", description = "Requested resource not found")
     })
     @GetMapping("/byUsername/{username}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#username)")
@@ -83,7 +120,15 @@ public class UserRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            }))),
+            @ApiResponse(responseCode = "404", description = "Requested resource not found")
     })
     @GetMapping("/byId/{userId}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#userId)")
@@ -95,7 +140,14 @@ public class UserRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User created"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            })))
     })
     @PostMapping
     @PreAuthorize("hasAuthority('Admin')")
@@ -111,7 +163,14 @@ public class UserRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User created"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            })))
     })
     @PostMapping("/createWithEmail")
     @PreAuthorize("hasAuthority('Admin')")
@@ -124,7 +183,14 @@ public class UserRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User created"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            })))
     })
     @PostMapping("/createWithUsername")
     @PreAuthorize("hasAuthority('Admin')")
@@ -137,7 +203,15 @@ public class UserRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User updated"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            }))),
+            @ApiResponse(responseCode = "404", description = "Requested resource not found")
     })
     @PutMapping("/{userId}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#userId)")
@@ -150,7 +224,15 @@ public class UserRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Role assigned"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            }))),
+            @ApiResponse(responseCode = "404", description = "Requested resource not found")
     })
     @PostMapping("/assignRole")
     @PreAuthorize("hasAuthority('Admin')")
@@ -163,7 +245,15 @@ public class UserRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Role revoked"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            }))),
+            @ApiResponse(responseCode = "404", description = "Requested resource not found")
     })
     @PostMapping("/revokeRole")
     @PreAuthorize("hasAuthority('Admin')")
@@ -176,7 +266,15 @@ public class UserRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User deleted"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "500", description = "Server error")
+            @ApiResponse(responseCode = "500", description = "Server error"),
+            @ApiResponse(responseCode = "403", description = "Access to this resource is forbidden",
+                    content = @Content(schema = @Schema(type = "object", implementation = Map.class,
+                            properties = {
+                                    @StringToClassMapItem(key = "timestamp", value = Date.class),
+                                    @StringToClassMapItem(key = "status", value = Integer.class),
+                                    @StringToClassMapItem(key = "message", value = String.class),
+                            }))),
+            @ApiResponse(responseCode = "404", description = "Requested resource not found")
     })
     @DeleteMapping("/{userId}")
     @PreAuthorize("hasAuthority('Admin') or @securityUtil.isUserOwner(#userId)")

@@ -26,17 +26,17 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     private final JWTHelper jwtHelper;
 
-    private final TokenValidationService invalidatedTokenService;
+    private final TokenValidationService tokenValidationService;
 
-    public JWTAuthorizationFilter(JWTHelper jwtHelper, TokenValidationService invalidatedTokenService) {
+    public JWTAuthorizationFilter(JWTHelper jwtHelper, TokenValidationService tokenValidationService) {
         this.jwtHelper = jwtHelper;
-        this.invalidatedTokenService = invalidatedTokenService;
+        this.tokenValidationService = tokenValidationService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = jwtHelper.extractTokenFromHeaderIfExists(request.getHeader(JWTUtil.AUTH_HEADER));
-        if (accessToken != null && invalidatedTokenService.isTokenValid(accessToken) && !List.of("/api/v1/users/refresh-token", "/api/v1/noauth/refresh-token").contains(request.getServletPath())) {
+        if (accessToken != null && tokenValidationService.isTokenValid(accessToken) && !List.of("/api/v1/users/refresh-token", "/api/v1/noauth/refresh-token").contains(request.getServletPath())) {
             Algorithm algorithm = Algorithm.HMAC256(JWTUtil.SECRET);
             JWTVerifier jwtVerifier = JWT.require(algorithm).build();
             DecodedJWT decodedJWT = jwtVerifier.verify(accessToken);
